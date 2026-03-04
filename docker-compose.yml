@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: sunshine-postgres
+    environment:
+      POSTGRES_DB: sunshinedb
+      POSTGRES_USER: sunshineuser
+      POSTGRES_PASSWORD: sunshinepass
+    ports:
+      - "5434:5432"
+    volumes:
+      - sunshine_pgdata:/var/lib/postgresql/data
+volumes:
+  sunshine_pgdata:
