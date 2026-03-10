@@ -22,8 +22,33 @@ public class RestaurantEntity {
 
     public RestaurantEntity() {}
 
-    
+    public RestaurantEntity(String name, String address) {
+        this.name = name;
+        this.address = address;
+        this.createdAt = LocalDateTime.now();
+    }
 
+    public UUID getId(){
+        return id;
+    }
 
+    public String getName(){
+        return name;
+    }
 
+    public String getAddress(){
+        return address;
+    }
+
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setAddress(String address){
+        this.address = address;
+    }
 }
