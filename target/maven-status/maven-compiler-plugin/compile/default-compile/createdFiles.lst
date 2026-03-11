@@ -1,1 +1,7 @@
+com/mauricio/sunshine/api/controller/RestaurantController.class
+com/mauricio/sunshine/service/RestaurantService.class
 com/mauricio/sunshine/SunshineApplication.class
+com/mauricio/sunshine/persistance/entity/RestaurantEntity.class
+com/mauricio/sunshine/api/dto/CreateRestaurantRequest.class
+com/mauricio/sunshine/persistance/repository/RestaurantRepository.class
+com/mauricio/sunshine/api/dto/RestaurantResponse.class

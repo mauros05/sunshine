@@ -1,1 +1,7 @@
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/SunshineApplication.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/RestaurantController.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/CreateRestaurantRequest.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/RestaurantResponse.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/persistance/entity/RestaurantEntity.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/persistance/repository/RestaurantRepository.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/service/RestaurantService.java
