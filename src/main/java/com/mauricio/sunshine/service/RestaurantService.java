@@ -1,7 +1,7 @@
 package com.mauricio.sunshine.service;
 
-import com.mauricio.sunshine.persistance.entity.RestaurantEntity;
-import com.mauricio.sunshine.persistance.repository.RestaurantRepository;
+import com.mauricio.sunshine.persistence.entity.RestaurantEntity;
+import com.mauricio.sunshine.persistence.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

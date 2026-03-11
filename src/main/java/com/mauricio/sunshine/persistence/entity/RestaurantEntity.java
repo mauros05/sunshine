@@ -1,4 +1,4 @@
-package com.mauricio.sunshine.persistance.entity;
+package com.mauricio.sunshine.persistence.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;

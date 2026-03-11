@@ -1,4 +1,4 @@
-package com.mauricio.sunshine.persistance.entity;
+package com.mauricio.sunshine.persistence.entity;
 
 import jakarta.persistence.*;
 
@@ -33,7 +33,10 @@ public class ProductEntity {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public  ProductEntity(RestaurantEntity restaurant, String name, BigDecimal price, String category) {
+    public ProductEntity() {
+    }
+
+    public ProductEntity(RestaurantEntity restaurant, String name, BigDecimal price, String category) {
         this.restaurant = restaurant;
         this.name = name;
         this.price = price;
@@ -50,5 +53,43 @@ public class ProductEntity {
         return restaurant;
     }
 
-    
+    public void setRestaurant(RestaurantEntity restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }
