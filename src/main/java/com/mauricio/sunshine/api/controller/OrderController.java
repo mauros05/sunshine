@@ -21,8 +21,10 @@ public class OrderController {
 
     @PostMapping
     public OrderResponse createOrder(@PathVariable UUID restaurantId,
-                                     @RequestBody(required = false) CreateOrderRequest req) {
-        OrderEntity order = orderService.createOrder(restaurantId);
+                                     @Valid @RequestBody(required = false) CreateOrderRequest req) {
+        List<AddOrderItemRequest> items = req == null || req.items() == null ? List.of() : req.items();
+
+        OrderEntity order = orderService.createOrder(restaurantId, items);
         return toResponse(order, orderService.getItems(order.getId()));
     }
 

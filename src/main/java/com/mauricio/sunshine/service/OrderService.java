@@ -1,5 +1,6 @@
 package com.mauricio.sunshine.service;
 
+import com.mauricio.sunshine.api.dto.AddOrderItemRequest;
 import com.mauricio.sunshine.persistence.entity.*;
 import com.mauricio.sunshine.persistence.repository.*;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,20 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderEntity createOrder(UUID restaurantId) {
+    public OrderEntity createOrder(UUID restaurantId, List<AddOrderItemRequest> items) {
         RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
 
         OrderEntity order = new OrderEntity(restaurant);
-        return orderRepo.save(order);
+        OrderEntity savedOrder = orderRepo.save(order);
+
+        for (AddOrderItemRequest item : items) {
+            addItemToOrder(savedOrder, restaurantId, item.productId(), item.quantity());
+        }
+
+        recalculateTotal(savedOrder);
+
+        return savedOrder;
     }
 
     @Transactional
@@ -46,15 +55,7 @@ public class OrderService {
             throw new IllegalArgumentException("Solo Ordenes en OPEN pueden ser modificadas");
         }
 
-        ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-
-        if (!product.isActive()) {
-            throw new IllegalArgumentException("El producto esta inactivo");
-        }
-
-        OrderItemEntity item = new OrderItemEntity(order, product, quantity, product.getPrice());
-        orderItemRepo.save(item);
+        addItemToOrder(order, restaurantId, productId, quantity);
 
         recalculateTotal(order);
 
@@ -70,6 +71,18 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderItemEntity> getItems(UUID orderId) {
         return orderItemRepo.findByOrderId(orderId);
+    }
+
+    private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {
+        ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+        if (!product.isActive()) {
+            throw new IllegalArgumentException("El producto esta inactivo");
+        }
+
+        OrderItemEntity item = new OrderItemEntity(order, product, quantity, product.getPrice());
+        orderItemRepo.save(item);
     }
 
     private void recalculateTotal(OrderEntity order) {

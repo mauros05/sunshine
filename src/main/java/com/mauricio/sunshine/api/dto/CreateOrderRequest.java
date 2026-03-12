@@ -1,4 +1,10 @@
 package com.mauricio.sunshine.api.dto;
 
-public record CreateOrderRequest()
-{}
+import jakarta.validation.Valid;
+
+import java.util.List;
+
+public record CreateOrderRequest(
+        @Valid
+        List<AddOrderItemRequest> items
+) {}
