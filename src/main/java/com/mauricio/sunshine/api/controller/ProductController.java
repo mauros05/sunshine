@@ -61,7 +61,7 @@ public class ProductController {
 
         return toResponse(product);
     }
-    
+
     private ProductResponse toResponse(ProductEntity product) {
         return new ProductResponse(
                 product.getId(),

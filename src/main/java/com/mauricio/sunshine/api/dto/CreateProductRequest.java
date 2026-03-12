@@ -13,11 +13,10 @@ public record CreateProductRequest(
         String name,
 
         @NotNull
-        @DecimalMin(value = "0,01", inclusive = true, message = "El precio debe ser mayor a 0")
+        @DecimalMin(value = "0.01", inclusive = true, message = "El precio debe ser mayor a 0")
         @Digits(integer = 18, fraction = 2, message = "El precio debe tener hasta 2 decimales")
         BigDecimal price,
 
         @NotBlank
         String category
-) {
-}
+) {}
