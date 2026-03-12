@@ -46,6 +46,28 @@ public class OrderEntity {
         return restaurant;
     }
 
-    public OrderStatus getStatus()
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setRestaurant(RestaurantEntity restaurant){
+        this.restaurant = restaurant;
+    }
+
+    public void setStatus(OrderStatus status){
+        this.status = status;
+    }
+
+    public void setTotal(BigDecimal total){
+        this.total = total;
+    }
 
 }
