@@ -3,7 +3,9 @@ package com.mauricio.sunshine.api.controller;
 import com.mauricio.sunshine.api.dto.*;
 import com.mauricio.sunshine.persistence.entity.OrderEntity;
 import com.mauricio.sunshine.persistence.entity.OrderItemEntity;
+import com.mauricio.sunshine.persistence.entity.PaymentEntity;
 import com.mauricio.sunshine.service.OrderService;
+import com.mauricio.sunshine.service.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +16,11 @@ import java.util.UUID;
 @RequestMapping("/api/restaurants/{restaurantId}/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final PaymentService paymentService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, PaymentService paymentService) {
         this.orderService = orderService;
+        this.paymentService = paymentService;
     }
 
     @PostMapping
@@ -50,6 +54,19 @@ public class OrderController {
         return toResponse(order, orderService.getItems(order.getId()));
     }
 
+    @PostMapping("/{orderId}/pay")
+    public PaymentResponse payOrder(@PathVariable UUID restaurantId,
+                                    @PathVariable UUID orderId,
+                                    @Valid @RequestBody PayOrderRequest req) {
+        PaymentEntity payment = paymentService.payOrder(
+                restaurantId,
+                orderId,
+                req.method(),
+                req.amount()
+        );
+        return  toPaymentResponse(payment);
+    }
+
     private OrderResponse toResponse(OrderEntity order, List<OrderItemEntity> items) {
         return new OrderResponse(
                 order.getId(),
@@ -69,6 +86,16 @@ public class OrderController {
                 item.getQuantity(),
                 item.getUnitPrice(),
                 item.getSubtotal()
+        );
+    }
+
+    private PaymentResponse toPaymentResponse(PaymentEntity payment) {
+        return new PaymentResponse(
+                payment.getId(),
+                payment.getOrder().getId(),
+                payment.getMethod(),
+                payment.getAmount(),
+                payment.getPaidAt()
         );
     }
 
