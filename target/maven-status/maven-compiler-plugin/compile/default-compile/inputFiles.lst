@@ -2,6 +2,7 @@
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/OrderController.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/ProductController.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/RestaurantController.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/SalesReportController.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/AddOrderItemRequest.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/CreateOrderRequest.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/CreateProductRequest.java
@@ -12,6 +13,7 @@
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/PaymentResponse.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/ProductResponse.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/RestaurantResponse.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/dto/SalesReportResponse.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/persistence/entity/OrderEntity.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/persistence/entity/OrderItemEntity.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/persistence/entity/OrderStatus.java
@@ -28,3 +30,4 @@
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/service/PaymentService.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/service/ProductService.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/service/RestaurantService.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/service/SalesReportService.java

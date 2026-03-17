@@ -16,4 +16,5 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 
     List<OrderEntity> findByRestaurantIdAndStatus(UUID restaurantId, OrderStatus status);
 
+    long countByRestaurantIdAndStatus(UUID restaurantId, OrderStatus status);
 }
