@@ -3,6 +3,7 @@ package com.mauricio.sunshine.api.controller;
 import com.mauricio.sunshine.api.dto.*;
 import com.mauricio.sunshine.persistence.entity.OrderEntity;
 import com.mauricio.sunshine.persistence.entity.OrderItemEntity;
+import com.mauricio.sunshine.persistence.entity.OrderStatus;
 import com.mauricio.sunshine.persistence.entity.PaymentEntity;
 import com.mauricio.sunshine.service.OrderService;
 import com.mauricio.sunshine.service.PaymentService;
@@ -21,6 +22,15 @@ public class OrderController {
     public OrderController(OrderService orderService, PaymentService paymentService) {
         this.orderService = orderService;
         this.paymentService = paymentService;
+    }
+
+    @GetMapping
+    public List<OrderResponse> getOrders(@PathVariable UUID restaurantId,
+                                         @RequestParam(required = false) OrderStatus status) {
+        return orderService.getOrdersByRestaurant(restaurantId, status)
+                .stream()
+                .map(order -> toResponse(order, orderService.getItems(order.getId())))
+                .toList();
     }
 
     @PostMapping

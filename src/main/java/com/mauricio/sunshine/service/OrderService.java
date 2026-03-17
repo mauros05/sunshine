@@ -73,6 +73,19 @@ public class OrderService {
         return orderItemRepo.findByOrderId(orderId);
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderEntity> getOrdersByRestaurant(UUID restaurantId, OrderStatus status){
+        if (!restaurantRepo.existsById(restaurantId)) {
+            throw new IllegalArgumentException("Restaurante no encontrado");
+        }
+
+        if (status == null) {
+            return orderRepo.findByRestaurantId(restaurantId);
+        }
+
+        return orderRepo.findByRestaurantIdAndStatus(restaurantId, status);
+    }
+
     private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {
         ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
