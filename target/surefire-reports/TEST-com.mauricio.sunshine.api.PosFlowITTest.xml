@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.mauricio.sunshine.OrderControllerIntegrationTest" time="0.273" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.mauricio.sunshine.api.PosFlowITTest" time="0.494" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -48,7 +48,7 @@
     <property name="localRepository" value="/Users/maurogutierrez/.m2/repository"/>
     <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
     <property name="java.io.tmpdir" value="/var/folders/2c/fb39prsx3l709j1zmr632pxm0000gn/T/"/>
-    <property name="com.zaxxer.hikari.pool_number" value="3"/>
+    <property name="com.zaxxer.hikari.pool_number" value="2"/>
     <property name="java.version" value="21.0.10"/>
     <property name="user.dir" value="/Users/maurogutierrez/code/mauros05/java/sunshine"/>
     <property name="os.arch" value="aarch64"/>
@@ -65,10 +65,10 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="createOrderWithItemsReturnsItemsAndTotal" classname="com.mauricio.sunshine.OrderControllerIntegrationTest" time="0.049">
-    <system-out><![CDATA[2026-03-17T23:51:03.134-06:00  INFO 93927 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.mauricio.sunshine.OrderControllerIntegrationTest]: OrderControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-03-17T23:51:03.137-06:00  INFO 93927 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.mauricio.sunshine.SunshineApplication for test class com.mauricio.sunshine.OrderControllerIntegrationTest
-2026-03-17T23:51:03.139-06:00  INFO 93927 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+  <testcase name="fullOrderPaymentFlow_shouldWork" classname="com.mauricio.sunshine.api.PosFlowITTest" time="0.185">
+    <system-out><![CDATA[2026-03-17T23:51:02.635-06:00  INFO 93927 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.mauricio.sunshine.api.PosFlowITTest]: PosFlowITTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-03-17T23:51:02.641-06:00  INFO 93927 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.mauricio.sunshine.SunshineApplication for test class com.mauricio.sunshine.api.PosFlowITTest
+2026-03-17T23:51:02.642-06:00  INFO 93927 --- [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -79,79 +79,77 @@
 
  :: Spring Boot ::               (v3.5.11)
 
-2026-03-17T23:51:03.145-06:00  INFO 93927 --- [           main] c.m.s.OrderControllerIntegrationTest     : Starting OrderControllerIntegrationTest using Java 21.0.10 with PID 93927 (started by maurogutierrez in /Users/maurogutierrez/code/mauros05/java/sunshine)
-2026-03-17T23:51:03.145-06:00  INFO 93927 --- [           main] c.m.s.OrderControllerIntegrationTest     : No active profile set, falling back to 1 default profile: "default"
-2026-03-17T23:51:03.192-06:00  INFO 93927 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-03-17T23:51:03.195-06:00  INFO 93927 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 5 JPA repository interfaces.
-2026-03-17T23:51:03.215-06:00  INFO 93927 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-03-17T23:51:03.216-06:00  INFO 93927 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-03-17T23:51:03.218-06:00  INFO 93927 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-03-17T23:51:03.219-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
-2026-03-17T23:51:03.227-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection org.postgresql.jdbc.PgConnection@14d9d042
-2026-03-17T23:51:03.227-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
-2026-03-17T23:51:03.230-06:00  INFO 93927 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+2026-03-17T23:51:02.651-06:00  INFO 93927 --- [           main] c.mauricio.sunshine.api.PosFlowITTest    : Starting PosFlowITTest using Java 21.0.10 with PID 93927 (started by maurogutierrez in /Users/maurogutierrez/code/mauros05/java/sunshine)
+2026-03-17T23:51:02.651-06:00  INFO 93927 --- [           main] c.mauricio.sunshine.api.PosFlowITTest    : The following 1 profile is active: "test"
+2026-03-17T23:51:02.716-06:00  INFO 93927 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-17T23:51:02.720-06:00  INFO 93927 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 5 JPA repository interfaces.
+2026-03-17T23:51:02.747-06:00  INFO 93927 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-17T23:51:02.748-06:00  INFO 93927 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-17T23:51:02.750-06:00  INFO 93927 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-17T23:51:02.751-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-03-17T23:51:02.758-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@241861bc
+2026-03-17T23:51:02.759-06:00  INFO 93927 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-03-17T23:51:02.762-06:00  INFO 93927 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
 	Database driver: undefined/unknown
 	Database version: 16.13
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-03-17T23:51:03.245-06:00  INFO 93927 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-03-17T23:51:03.278-06:00  INFO 93927 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-03-17T23:51:03.331-06:00  INFO 93927 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-03-17T23:51:03.331-06:00  INFO 93927 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-03-17T23:51:03.332-06:00  INFO 93927 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
-2026-03-17T23:51:03.334-06:00  INFO 93927 --- [           main] c.m.s.OrderControllerIntegrationTest     : Started OrderControllerIntegrationTest in 0.195 seconds (process running for 2.607)
-Hibernate: select pe1_0.id,pe1_0.amount,pe1_0.method,pe1_0.order_id,pe1_0.paid_at from payments pe1_0
-Hibernate: delete from payments where id=?
-Hibernate: delete from payments where id=?
-Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0
-Hibernate: delete from order_items where id=?
-Hibernate: delete from order_items where id=?
-Hibernate: delete from order_items where id=?
-Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0
-Hibernate: delete from orders where id=?
-Hibernate: delete from orders where id=?
-Hibernate: delete from orders where id=?
-Hibernate: delete from orders where id=?
-Hibernate: select pe1_0.id,pe1_0.active,pe1_0.category,pe1_0.created_at,pe1_0.name,pe1_0.price,pe1_0.restaurant_id from products pe1_0
-Hibernate: delete from products where id=?
-Hibernate: delete from products where id=?
-Hibernate: delete from products where id=?
-Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0
-Hibernate: delete from restaurants where id=?
-Hibernate: delete from restaurants where id=?
-Hibernate: delete from restaurants where id=?
-Hibernate: delete from restaurants where id=?
+2026-03-17T23:51:02.779-06:00  INFO 93927 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-17T23:51:02.814-06:00  INFO 93927 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-17T23:51:02.882-06:00  INFO 93927 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-03-17T23:51:02.882-06:00  INFO 93927 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-03-17T23:51:02.882-06:00  INFO 93927 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-03-17T23:51:02.886-06:00  INFO 93927 --- [           main] c.mauricio.sunshine.api.PosFlowITTest    : Started PosFlowITTest in 0.244 seconds (process running for 2.16)
 Hibernate: insert into restaurants (address,created_at,name,id) values (?,?,?,?)
+Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0 where re1_0.id=?
 Hibernate: insert into products (active,category,created_at,name,price,restaurant_id,id) values (?,?,?,?,?,?,?)
 Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0 where re1_0.id=?
-Hibernate: select pe1_0.id,pe1_0.active,pe1_0.category,pe1_0.created_at,pe1_0.name,pe1_0.price,pe1_0.restaurant_id from products pe1_0 join restaurants r1_0 on r1_0.id=pe1_0.restaurant_id where pe1_0.id=? and r1_0.id=?
 Hibernate: insert into orders (created_at,restaurant_id,status,total,id) values (?,?,?,?,?)
-Hibernate: insert into order_items (order_id,product_id,quantity,subtotal,unit_price,id) values (?,?,?,?,?,?)
 Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
-Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
 Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
-]]></system-out>
-  </testcase>
-  <testcase name="addItemReturnsOrderWithLoadedProductData" classname="com.mauricio.sunshine.OrderControllerIntegrationTest" time="0.022">
-    <system-out><![CDATA[Hibernate: select pe1_0.id,pe1_0.amount,pe1_0.method,pe1_0.order_id,pe1_0.paid_at from payments pe1_0
-Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0
-Hibernate: delete from order_items where id=?
-Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0
-Hibernate: delete from orders where id=?
-Hibernate: select pe1_0.id,pe1_0.active,pe1_0.category,pe1_0.created_at,pe1_0.name,pe1_0.price,pe1_0.restaurant_id from products pe1_0
-Hibernate: delete from products where id=?
-Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0
-Hibernate: delete from restaurants where id=?
-Hibernate: insert into restaurants (address,created_at,name,id) values (?,?,?,?)
-Hibernate: insert into products (active,category,created_at,name,price,restaurant_id,id) values (?,?,?,?,?,?,?)
-Hibernate: insert into orders (created_at,restaurant_id,status,total,id) values (?,?,?,?,?)
 Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
 Hibernate: select pe1_0.id,pe1_0.active,pe1_0.category,pe1_0.created_at,pe1_0.name,pe1_0.price,pe1_0.restaurant_id from products pe1_0 join restaurants r1_0 on r1_0.id=pe1_0.restaurant_id where pe1_0.id=? and r1_0.id=?
 Hibernate: insert into order_items (order_id,product_id,quantity,subtotal,unit_price,id) values (?,?,?,?,?,?)
 Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
+Hibernate: insert into payments (amount,method,order_id,paid_at,id) values (?,?,?,?,?)
+Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+]]></system-out>
+  </testcase>
+  <testcase name="cancelPaidOrder_shouldFail" classname="com.mauricio.sunshine.api.PosFlowITTest" time="0.034">
+    <system-out><![CDATA[Hibernate: insert into restaurants (address,created_at,name,id) values (?,?,?,?)
+Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0 where re1_0.id=?
+Hibernate: insert into products (active,category,created_at,name,price,restaurant_id,id) values (?,?,?,?,?,?,?)
+Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0 where re1_0.id=?
+Hibernate: insert into orders (created_at,restaurant_id,status,total,id) values (?,?,?,?,?)
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
+Hibernate: select pe1_0.id,pe1_0.active,pe1_0.category,pe1_0.created_at,pe1_0.name,pe1_0.price,pe1_0.restaurant_id from products pe1_0 join restaurants r1_0 on r1_0.id=pe1_0.restaurant_id where pe1_0.id=? and r1_0.id=?
+Hibernate: insert into order_items (order_id,product_id,quantity,subtotal,unit_price,id) values (?,?,?,?,?,?)
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
+Hibernate: insert into payments (amount,method,order_id,paid_at,id) values (?,?,?,?,?)
+Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
+]]></system-out>
+  </testcase>
+  <testcase name="cancelOpenOrder_shouldWork" classname="com.mauricio.sunshine.api.PosFlowITTest" time="0.022">
+    <system-out><![CDATA[Hibernate: insert into restaurants (address,created_at,name,id) values (?,?,?,?)
+Hibernate: select re1_0.id,re1_0.address,re1_0.created_at,re1_0.name from restaurants re1_0 where re1_0.id=?
+Hibernate: insert into orders (created_at,restaurant_id,status,total,id) values (?,?,?,?,?)
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
+Hibernate: select oe1_0.id,oe1_0.created_at,oe1_0.restaurant_id,oe1_0.status,oe1_0.total from orders oe1_0 join restaurants r1_0 on r1_0.id=oe1_0.restaurant_id where oe1_0.id=? and r1_0.id=?
 Hibernate: update orders set created_at=?,restaurant_id=?,status=?,total=? where id=?
 Hibernate: select oie1_0.id,oie1_0.order_id,oie1_0.product_id,p1_0.id,p1_0.active,p1_0.category,p1_0.created_at,p1_0.name,p1_0.price,p1_0.restaurant_id,oie1_0.quantity,oie1_0.subtotal,oie1_0.unit_price from order_items oie1_0 join orders o1_0 on o1_0.id=oie1_0.order_id join products p1_0 on p1_0.id=oie1_0.product_id where o1_0.id=?
 ]]></system-out>

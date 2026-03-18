@@ -5,6 +5,7 @@ import com.mauricio.sunshine.persistence.entity.ProductEntity;
 import com.mauricio.sunshine.persistence.entity.RestaurantEntity;
 import com.mauricio.sunshine.persistence.repository.OrderItemRepository;
 import com.mauricio.sunshine.persistence.repository.OrderRepository;
+import com.mauricio.sunshine.persistence.repository.PaymentRepository;
 import com.mauricio.sunshine.persistence.repository.ProductRepository;
 import com.mauricio.sunshine.persistence.repository.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +41,12 @@ class OrderControllerIntegrationTest {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     @BeforeEach
     void cleanDatabase() {
+        paymentRepository.deleteAll();
         orderItemRepository.deleteAll();
         orderRepository.deleteAll();
         productRepository.deleteAll();

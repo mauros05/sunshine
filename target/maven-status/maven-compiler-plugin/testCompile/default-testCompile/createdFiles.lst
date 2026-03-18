@@ -1,2 +1,4 @@
+com/mauricio/sunshine/api/PosFlowITTest.class
+com/mauricio/sunshine/api/JsonTestUtils.class
 com/mauricio/sunshine/OrderControllerIntegrationTest.class
 com/mauricio/sunshine/SunshineApplicationTests.class

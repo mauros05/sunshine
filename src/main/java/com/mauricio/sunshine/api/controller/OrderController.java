@@ -77,6 +77,14 @@ public class OrderController {
         return  toPaymentResponse(payment);
     }
 
+    @PatchMapping("/{orderId}/cancel")
+    public OrderResponse cancelOrder(@PathVariable UUID restaurantId,
+                                     @PathVariable UUID orderId) {
+        OrderEntity order = orderService.cancelOrder(restaurantId, orderId);
+
+        return toResponse(order, orderService.getItems(order.getId()));
+    }
+
     private OrderResponse toResponse(OrderEntity order, List<OrderItemEntity> items) {
         return new OrderResponse(
                 order.getId(),

@@ -2,6 +2,7 @@ com/mauricio/sunshine/service/RestaurantService.class
 com/mauricio/sunshine/api/dto/ProductResponse.class
 com/mauricio/sunshine/service/PaymentService.class
 com/mauricio/sunshine/service/SalesReportService.class
+com/mauricio/sunshine/api/ApiExceptionHandler.class
 com/mauricio/sunshine/persistence/repository/OrderItemRepository.class
 com/mauricio/sunshine/api/dto/SalesReportResponse.class
 com/mauricio/sunshine/api/dto/OrderItemResponse.class

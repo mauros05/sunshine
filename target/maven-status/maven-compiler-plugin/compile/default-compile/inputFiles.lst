@@ -1,4 +1,5 @@
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/SunshineApplication.java
+/Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/ApiExceptionHandler.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/OrderController.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/ProductController.java
 /Users/maurogutierrez/code/mauros05/java/sunshine/src/main/java/com/mauricio/sunshine/api/controller/RestaurantController.java

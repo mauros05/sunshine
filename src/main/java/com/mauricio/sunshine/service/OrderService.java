@@ -3,6 +3,8 @@ package com.mauricio.sunshine.service;
 import com.mauricio.sunshine.api.dto.AddOrderItemRequest;
 import com.mauricio.sunshine.persistence.entity.*;
 import com.mauricio.sunshine.persistence.repository.*;
+import jakarta.servlet.http.PushBuilder;
+import org.hibernate.query.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +86,19 @@ public class OrderService {
         }
 
         return orderRepo.findByRestaurantIdAndStatus(restaurantId, status);
+    }
+
+    @Transactional
+    public OrderEntity cancelOrder(UUID restaurantId, UUID orderId) {
+        OrderEntity order = orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontada"));
+
+        if (order.getStatus() != OrderStatus.OPEN) {
+            throw new IllegalArgumentException("Solo se pueden cancelar los pedidos ABIERTOS.");
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        return orderRepo.save(order);
     }
 
     private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {
