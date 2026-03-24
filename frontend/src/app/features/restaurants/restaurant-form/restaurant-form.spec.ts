@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RestaurantForm } from './restaurant-form';
+import { RestaurantFormComponent } from './restaurant-form.component';
 
-describe('RestaurantForm', () => {
-  let component: RestaurantForm;
-  let fixture: ComponentFixture<RestaurantForm>;
+describe('RestaurantFormComponent', () => {
+  let component: RestaurantFormComponent;
+  let fixture: ComponentFixture<RestaurantFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RestaurantForm],
+      imports: [RestaurantFormComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RestaurantForm);
+    fixture = TestBed.createComponent(RestaurantFormComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

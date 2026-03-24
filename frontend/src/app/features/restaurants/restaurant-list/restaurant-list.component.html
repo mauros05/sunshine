@@ -1,0 +1,28 @@
+<section class="page">
+  <h1>Restaurantes</h1>
+
+  <app-restaurant-form (created)="loadRestaurants()"></app-restaurant-form>
+
+  <hr />
+
+  @if (loading) {
+    <p>Cargando...</p>
+  }
+
+  @if (error) {
+    <p>{{ error }}</p>
+  }
+
+  <div class="grid">
+    @for (restaurant of restaurants; track restaurant.id) {
+      <mat-card class="card">
+        <mat-card-title>{{ restaurant.name }}</mat-card-title>
+        <mat-card-content>
+          <p><strong>Direccion:</strong> {{ restaurant.address }}</p>
+          <p><strong>ID:</strong> {{ restaurant.id }}</p>
+          <p><strong>Creado:</strong> {{ restaurant.createdAt }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</section>
