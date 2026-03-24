@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CreateProductRequest, Product } from '../models/product.model';
 
-Injectable({
+@Injectable({
   providedIn: 'root',
 })
 export class ProductsService {

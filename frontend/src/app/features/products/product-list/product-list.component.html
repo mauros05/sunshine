@@ -1,0 +1,42 @@
+<section class="page">
+  <h1>Productos</h1>
+
+  <mat-form-field appearance="outline" class="restaurant-select">
+    <mat-label>Restaurante</mat-label>
+    <mat-select [value]="selectedRestaurantId" (valueChange)="onRestaurantChange($event)">
+      @for (restaurant of restaurants; track restaurant.id) {
+      <mat-option [value]="restaurant.id">
+        {{ restaurant.name }}
+      </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (selectedRestaurantId) {
+  <app-product-form [restaurantId]="selectedRestaurantId" (created)="loadProducts()">
+  </app-product-form>
+  }
+
+  <hr />
+
+  @if (loadingProducts) {
+  <p>Cargando productos...</p>
+  }
+
+  @if (error) {
+  <p>{{ error }}</p>
+  }
+
+  <div class="grid">
+    @for (product of products; track product.id) {
+    <mat-card class="card">
+      <mat-card-title>{{ product.name }}</mat-card-title>
+      <mat-card-content>
+        <p><strong>Categoría:</strong> {{ product.category }}</p>
+        <p><strong>Precio:</strong> {{ product.price }}</p>
+        <p><strong>Activo:</strong> {{ product.active ? 'Sí' : 'No' }}</p>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+</section>
