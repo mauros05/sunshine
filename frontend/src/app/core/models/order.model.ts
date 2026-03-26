@@ -22,6 +22,6 @@ export interface AddOrderItemRequest {
 }
 
 export interface PayOrderRequest {
-  method: 'CASH' | 'CARD' | 'TRANSER';
+  method: 'CASH' | 'CARD' | 'TRANSFER';
   amount: number;
 }
