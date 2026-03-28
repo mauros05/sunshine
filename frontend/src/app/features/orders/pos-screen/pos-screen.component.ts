@@ -124,6 +124,19 @@ export class PosScreenComponent implements OnInit {
     });
   }
 
+  cancelOrder(): void {
+    if (!this.selectedRestaurantId || !this.currentOrder) return;
+
+    this.ordersService.cancelOrder(this.selectedRestaurantId, this.currentOrder.id).subscribe({
+      next: (order) => {
+        this.currentOrder = order;
+      },
+      error: () => {
+        this.error = 'Error al cancelar la orden';
+      }
+    })
+  }
+
   refreshCurrentOrder(): void {
     if (!this.selectedRestaurantId || !this.currentOrder) return;
 

@@ -1,0 +1,47 @@
+.page {
+  padding: 24px;
+}
+
+.restaurant-select {
+  width: 320px;
+}
+
+.actions {
+  margin: 16px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.left-panel,
+.right-panel {
+  min-height: 300px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  padding: 12px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.order-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.error {
+  color: red;
+}

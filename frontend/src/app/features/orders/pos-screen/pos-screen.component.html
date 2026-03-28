@@ -1,0 +1,104 @@
+<section class="page">
+  <h1>POS Screen</h1>
+
+  <mat-form-field appearance="outline" class="restaurant-select">
+    <mat-label>Restaurante</mat-label>
+    <mat-select [value]="selectedRestaurantId" (valueChange)="onRestaurantChange($event)">
+      @for (restaurant of restaurants; track restaurant.id) {
+      <mat-option [value]="restaurant.id">
+        {{ restaurant.name }}
+      </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="createOrder()"
+      [disabled]="!!currentOrder && currentOrder.status === 'OPEN'">
+      Nueva orden
+    </button>
+  </div>
+
+  @if (error) {
+  <p class="error">{{ error }}</p>
+  }
+
+  <div class="layout">
+    <!-- Productos -->
+    <section class="left-panel">
+      <h2>Productos</h2>
+
+      <div class="products-grid">
+        @for (product of products; track product.id) {
+        <mat-card class="product-card">
+          <mat-card-title>{{ product.name }}</mat-card-title>
+          <mat-card-content>
+            <p>{{ product.category }}</p>
+            <p><strong>${{ product.price }}</strong></p>
+          </mat-card-content>
+
+          <button mat-raised-button color="accent" (click)="addProduct(product)"
+            [disabled]="!currentOrder || currentOrder.status !== 'OPEN'">
+            Agregar
+          </button>
+        </mat-card>
+        }
+      </div>
+    </section>
+
+    <!-- Orden actual -->
+    <section class="right-panel">
+      <h2>Orden actual</h2>
+
+      @if (!currentOrder) {
+      <p>No hay una orden abierta.</p>
+      }
+
+      @if (currentOrder) {
+      <mat-card>
+        <mat-card-content>
+          <p><strong>ID:</strong> {{ currentOrder.id }}</p>
+          <p><strong>Status:</strong> {{ currentOrder.status }}</p>
+          <p><strong>Total:</strong> ${{ currentOrder.total }}</p>
+
+          <h3>Items</h3>
+
+          @if (currentOrder.items.length === 0) {
+          <p>No hay productos agregados.</p>
+          }
+
+          <ul>
+            @for (item of currentOrder.items; track item.id) {
+            <li>
+              {{ item.productName }} x{{ item.quantity }}
+              - ${{ item.subtotal }}
+            </li>
+            }
+          </ul>
+
+          @if (currentOrder.status === 'OPEN') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Método de pago</mat-label>
+            <mat-select [(value)]="payMethod">
+              <mat-option value="CASH">Cash</mat-option>
+              <mat-option value="CARD">Card</mat-option>
+              <mat-option value="TRANSFER">Transfer</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="order-actions">
+            <button mat-raised-button color="primary" (click)="payOrder()">
+              Pagar
+            </button>
+
+            <button mat-raised-button color="warn" (click)="cancelOrder()">
+              Cancelar
+            </button>
+          </div>
+          }
+        </mat-card-content>
+      </mat-card>
+      }
+    </section>
+  </div>
+</section>
