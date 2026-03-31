@@ -2,8 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
-import {  } from "../models/report.model";
-import { SalesReport } from '../../features/reports/sales-report/sales-report';
+import { SalesReport } from "../models/report.model";
 
 
 @Injectable({

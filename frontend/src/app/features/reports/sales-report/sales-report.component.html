@@ -1,0 +1,39 @@
+<section class="page">
+  <h1>Sales Report</h1>
+
+  <mat-form-field appearance="outline" class="restaurant-select">
+    <mat-label>Restaurante</mat-label>
+    <mat-select [(value)]="selectedRestaurantId">
+      @for (restaurant of restaurants; track restaurant.id) {
+      <mat-option [value]="restaurant.id">
+        {{ restaurant.name }}
+      </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="loadReport()" [disabled]="!selectedRestaurantId || loading">
+      Consultar reporte
+    </button>
+  </div>
+
+  @if (loading) {
+  <p>Cargando reporte...</p>
+  }
+
+  @if (error) {
+  <p class="error">{{ error }}</p>
+  }
+
+  @if (report) {
+  <mat-card class="report-card">
+    <mat-card-title>Resumen de ventas</mat-card-title>
+    <mat-card-content>
+      <p><strong>Restaurant ID:</strong> {{ report.restaurantId }}</p>
+      <p><strong>Órdenes pagadas:</strong> {{ report.paidOrders }}</p>
+      <p><strong>Total vendido:</strong> ${{ report.totalSales }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+</section>

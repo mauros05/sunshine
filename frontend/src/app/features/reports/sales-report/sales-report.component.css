@@ -1,0 +1,21 @@
+.page {
+  padding: 24px;
+}
+
+.restaurant-select {
+  width: 320px;
+}
+
+.actions {
+  margin: 16px 0;
+}
+
+.report-card {
+  margin-top: 24px;
+  max-width: 500px;
+  padding: 12px;
+}
+
+.error {
+  color: red;
+}
