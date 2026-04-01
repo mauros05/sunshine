@@ -164,12 +164,17 @@ export class PosScreenComponent implements OnInit {
   payOrder(): void {
     if (!this.selectedRestaurantId || !this.currentOrder) return;
 
+    this.error = '';
+    this.successMessage = '';
+
     this.ordersService.payOrder(this.selectedRestaurantId, this.currentOrder.id, {
       method: this.payMethod,
       amount: this.currentOrder.total
     }).subscribe({
       next: () => {
-        this.refreshCurrentOrder();
+        this.successMessage = 'Orden pagada correctamente.';
+        this.currentOrder = null;
+        this.loadOpenOrderIfExist();
       },
       error: () => {
         this.error = 'No se pudo pagar la orden';
@@ -180,24 +185,24 @@ export class PosScreenComponent implements OnInit {
   cancelOrder(): void {
     if (!this.selectedRestaurantId || !this.currentOrder) return;
 
+    this.error = '';
+    this.successMessage = '';
+
     this.ordersService.cancelOrder(this.selectedRestaurantId, this.currentOrder.id).subscribe({
-      next: (order) => {
-        this.currentOrder = order;
+      next: () => {
+        this.successMessage = 'Orden cancelada correctamente.';
+        this.currentOrder = null;
+        this.loadOpenOrderIfExist();
       },
       error: () => {
         this.error = 'Error al cancelar la orden';
       }
-    })
+    });
   }
 
-  refreshCurrentOrder(): void {
-    if (!this.selectedRestaurantId || !this.currentOrder) return;
-
-    this.ordersService.getOrder(this.selectedRestaurantId, this.currentOrder.id).subscribe({
-      next: (order) => {
-        this.currentOrder = order;
-      }
-    });
+  clearMessages(): void {
+    this.error = '';
+    this.successMessage = '';
   }
 
 }
