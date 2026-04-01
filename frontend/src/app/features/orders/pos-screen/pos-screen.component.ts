@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from "@angular/forms";
 
 import { Restaurant } from '../../../core/models/restaurant.model';
 import { Product } from '../../../core/models/product.model';
@@ -21,7 +23,9 @@ import { OrdersService } from '../../../core/services/orders.service';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInput,
+    FormsModule
   ],
   templateUrl: './pos-screen.component.html',
   styleUrl: './pos-screen.component.css'
@@ -39,7 +43,11 @@ export class PosScreenComponent implements OnInit {
 
   loading = false;
   error = '';
+  successMessage = '';
+
   payMethod: 'CASH' | 'CARD' | 'TRANSFER' = 'CASH';
+
+  quantities: Record<string, number> = {};
 
   ngOnInit(): void {
     this.loadRestaurants();
@@ -63,7 +71,11 @@ export class PosScreenComponent implements OnInit {
   onRestaurantChange(restaurantId: string): void {
     this.selectedRestaurantId = restaurantId;
     this.currentOrder = null;
+    this.successMessage = '';
+    this.error = '';
+    this.quantities = {};
     this.loadProducts();
+    this.loadOpenOrderIfExist();
   }
 
   loadProducts(): void {
@@ -75,6 +87,23 @@ export class PosScreenComponent implements OnInit {
       },
       error: () => {
         this.error = 'No se pudieron cargar los productos';
+      }
+    });
+  }
+
+  loadOpenOrderIfExist(): void {
+    if (!this.selectedRestaurantId) return;
+
+    this.ordersService.getOrders(this.selectedRestaurantId, 'OPEN').subscribe({
+      next: (orders) => {
+        if (orders.length > 0) {
+          this.currentOrder = orders[0];
+        } else {
+          this.currentOrder = null;
+        }
+      },
+      error: () => {
+        this.currentOrder = null;
       }
     });
   }
