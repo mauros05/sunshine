@@ -1,0 +1,24 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.layout-container {
+  height: calc(100vh - 64px);
+}
+
+.sidenav {
+  width: 220px;
+  padding-top: 12px;
+}
+
+.content {
+  padding: 0;
+}
+
+.active-link {
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}

@@ -13,6 +13,7 @@ import { ReportsServie } from "../../../core/services/reports.service";
 
 @Component({
   selector: 'app-sales-report',
+  standalone: true,
   imports: [
     CommonModule,
     MatCardModule,

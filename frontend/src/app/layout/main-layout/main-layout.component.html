@@ -1,0 +1,29 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span>Sunshine POS</span>
+</mat-toolbar>
+
+<mat-sidenav-container class="layout-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/restaurants" routerLinkActive="active-link">
+        Restaurants
+      </a>
+
+      <a mat-list-item routerLink="/products" routerLinkActive="active-link">
+        Products
+      </a>
+
+      <a mat-list-item routerLink="/pos" routerLinkActive="active-link">
+        POS
+      </a>
+
+      <a mat-list-item routerLink="/reports" routerLinkActive="active-link">
+        Reports
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
