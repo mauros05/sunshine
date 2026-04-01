@@ -88,4 +88,13 @@ export class ProductListComponent implements OnInit {
     this.selectedRestaurantId = restaurantId;
     this.loadProducts();
   }
+
+  onProductCreated(product: Product): void {
+    if (product.restaurantId === this.selectedRestaurantId) {
+      // optimistic update so the UI reflects creation immediately
+      this.products = [product, ...this.products];
+    }
+    // keep the list consistent with server-side calculations/filters
+    this.loadProducts();
+  }
 }

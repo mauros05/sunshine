@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ProductsService } from "../../../core/services/products.service";
+import { Product } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -22,7 +23,7 @@ export class ProductFormComponent {
   private productsService = inject(ProductsService);
 
   @Input({ required: true }) restaurantId!: string;
-  @Output() created = new EventEmitter<void>();
+  @Output() created = new EventEmitter<Product>();
 
   loading = false;
   error = '';
@@ -44,15 +45,18 @@ export class ProductFormComponent {
       return;
     }
 
+    this.loading = true;
+    this.error = '';
+
     this.productsService.createProduct(this.restaurantId, {
       name: this.form.value.name!,
       price: Number(this.form.value.price),
       category: this.form.value.category!
     }).subscribe({
-      next: () => {
+      next: (product) => {
         this.form.reset({ name: '', price: 0, category: '' });
         this.loading = false;
-        this.created.emit();
+        this.created.emit(product);
       },
       error: () => {
         this.loading = false;

@@ -60,6 +60,7 @@ export class PosScreenComponent implements OnInit {
         if (data.length > 0) {
           this.selectedRestaurantId = data[0].id;
           this.loadProducts();
+          this.loadOpenOrderIfExist();
         }
       },
       error: () => {
@@ -154,6 +155,7 @@ export class PosScreenComponent implements OnInit {
         this.currentOrder = order;
         this.successMessage = `${product.name} agregado correctamente.`;
         this.quantities[product.id] = 1;
+        this.refreshCurrentOrder();
       },
       error: () => {
         this.error = 'No se pudo agregar el producto';
@@ -163,6 +165,10 @@ export class PosScreenComponent implements OnInit {
 
   payOrder(): void {
     if (!this.selectedRestaurantId || !this.currentOrder) return;
+    if (this.currentOrder.total <= 0) {
+      this.error = 'No puedes pagar una orden con total 0.';
+      return;
+    }
 
     this.error = '';
     this.successMessage = '';
@@ -203,6 +209,19 @@ export class PosScreenComponent implements OnInit {
   clearMessages(): void {
     this.error = '';
     this.successMessage = '';
+  }
+
+  private refreshCurrentOrder(): void {
+    if (!this.selectedRestaurantId || !this.currentOrder) return;
+
+    this.ordersService.getOrder(this.selectedRestaurantId, this.currentOrder.id).subscribe({
+      next: (order) => {
+        this.currentOrder = order;
+      },
+      error: () => {
+        // non-blocking: keep latest order data from previous response
+      }
+    });
   }
 
 }

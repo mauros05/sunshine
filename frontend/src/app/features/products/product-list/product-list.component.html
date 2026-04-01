@@ -13,7 +13,7 @@
   </mat-form-field>
 
   @if (selectedRestaurantId) {
-  <app-product-form [restaurantId]="selectedRestaurantId" (created)="loadProducts()">
+  <app-product-form [restaurantId]="selectedRestaurantId" (created)="onProductCreated($event)">
   </app-product-form>
   }
 
