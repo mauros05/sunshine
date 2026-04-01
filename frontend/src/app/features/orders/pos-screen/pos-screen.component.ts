@@ -111,25 +111,49 @@ export class PosScreenComponent implements OnInit {
   createOrder(): void {
     if (!this.selectedRestaurantId) return;
 
+    this.error = '';
+    this.successMessage = '';
+
+    if (this.currentOrder && this.currentOrder.status == 'OPEN') {
+      this.error = 'Ya existe una orden abierta para este restaurante.';
+      return;
+    }
+
     this.ordersService.createOrder(this.selectedRestaurantId).subscribe({
       next: (order) => {
         this.currentOrder = order;
+        this.successMessage = 'Orden creada correctamente';
       },
       error: () => {
-        this.error = 'No se pudo cargar la orden'
+        this.error = 'No se pudo crear la orden';
       }
     });
   }
 
   addProduct(product: Product): void {
-    if (!this.selectedRestaurantId || !this.currentOrder) return;
+    if (!this.selectedRestaurantId || !this.currentOrder) {
+      this.error = 'Primero debes crear una orden.';
+      return;
+    }
+
+    const quantity = this.quantities[product.id] || 1;
+
+    if (quantity < 1) {
+      this.error = 'La cantidad debe ser al menos 1.';
+      return;
+    }
+
+    this.error = '';
+    this.successMessage = '';
 
     this.ordersService.addItem(this.selectedRestaurantId, this.currentOrder.id, {
       productId: product.id,
-      quantity: 1
+      quantity
     }).subscribe({
       next: (order) => {
         this.currentOrder = order;
+        this.successMessage = `${product.name} agregado correctamente.`;
+        this.quantities[product.id] = 1;
       },
       error: () => {
         this.error = 'No se pudo agregar el producto';
