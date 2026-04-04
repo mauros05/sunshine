@@ -1,0 +1,70 @@
+<section class="page">
+  <h1>Órdenes</h1>
+
+  <div class="filters">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Restaurante</mat-label>
+      <mat-select [value]="selectedRestaurantId" (valueChange)="onRestaurantChange($event)">
+        @for (restaurant of restaurants; track restaurant.id) {
+        <mat-option [value]="restaurant.id">
+          {{ restaurant.name }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="selectedStatus" (valueChange)="onStatusChange($event)">
+        @for (status of statusOptions; track status.value) {
+        <mat-option [value]="status.value">
+          {{ status.label }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="loadOrders()">
+      Refrescar
+    </button>
+  </div>
+
+  @if (loading) {
+  <p>Cargando órdenes...</p>
+  }
+
+  @if (error) {
+  <p class="error">{{ error }}</p>
+  }
+
+  @if (!loading && orders.length === 0) {
+  <p>No hay órdenes para mostrar.</p>
+  }
+
+  <div class="orders-grid">
+    @for (order of orders; track order.id) {
+    <mat-card class="order-card">
+      <mat-card-title>Orden {{ order.id }}</mat-card-title>
+      <mat-card-content>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+        <p><strong>Total:</strong> ${{ order.total }}</p>
+        <p><strong>Creada:</strong> {{ order.createdAt }}</p>
+
+        <h3>Items</h3>
+
+        @if (order.items.length === 0) {
+        <p>Sin items</p>
+        }
+
+        <ul class="items-list">
+          @for (item of order.items; track item.id) {
+          <li>
+            {{ item.productName }} x{{ item.quantity }} - ${{ item.subtotal }}
+          </li>
+          }
+        </ul>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+</section>

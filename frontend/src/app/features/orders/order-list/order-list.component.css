@@ -1,0 +1,34 @@
+.page {
+  padding: 24px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.filter-field {
+  width: 240px;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+.order-card {
+  padding: 12px;
+}
+
+.items-list {
+  padding-left: 18px;
+}
+
+.error {
+  color: #b00020;
+  font-weight: 500;
+}

@@ -21,8 +21,8 @@ import { OrdersService } from '../../../core/services/orders.service';
     MatSelectModule,
     MatButtonModule
   ],
-  templateUrl: './order-list-component.html',
-  styleUrl: './order-list-component.css',
+  templateUrl: './order-list.component.html',
+  styleUrl: './order-list.component.css',
 })
 export class OrderListComponent implements OnInit {
   private restaurantsService = inject(RestaurantsService);
@@ -42,7 +42,55 @@ export class OrderListComponent implements OnInit {
     { value: 'OPEN', label: 'Abiertas' },
     { value: 'PAID', label: 'Pagadas' },
     { value: 'CANCELLED', label: 'Canceladas' }
-  ]
+  ];
 
+  ngOnInit(): void {
+    this.loadRestaurants();
+  }
+
+  loadRestaurants(): void {
+    this.restaurantsService.getRestaurants().subscribe({
+      next: (data) => {
+        this.restaurants = data;
+        if (data.length > 0) {
+          this.selectedRestaurantId = data[0].id;
+          this.loadOrders;
+        }
+      },
+      error: () => {
+        this.error = 'No se pudieron cargar los restaurantes';
+      }
+    });
+  }
+
+  loadOrders(): void {
+    if (!this.selectedRestaurantId) return;
+
+    this.loading = true;
+    this.error = '';
+
+    const status = this.selectedStatus || undefined;
+
+    this.ordersService.getOrders(this.selectedRestaurantId, status).subscribe({
+      next: (data) => {
+        this.orders = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'No se pudieron cargar las ordenes';
+        this.loading = false;
+      }
+    });
+  }
+
+  onRestaurantChange(restaurantId: string): void {
+    this.selectedRestaurantId = restaurantId;
+    this.loadOrders();
+  }
+
+  onStatusChange(status: string): void {
+    this.selectedStatus = status;
+    this.loadOrders();
+  }
 
 }

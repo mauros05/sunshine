@@ -3,6 +3,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { RestaurantListComponent } from './features/restaurants/restaurant-list/restaurant-list.component';
 import { ProductListComponent } from './features/products/product-list/product-list.component';
 import { PosScreenComponent } from './features/orders/pos-screen/pos-screen.component';
+import { OrderListComponent } from './features/orders/order-list/order-list.component';
 import { SalesReportComponent } from './features/reports/sales-report/sales-report.component';
 
 export const routes: Routes = [
@@ -14,6 +15,7 @@ export const routes: Routes = [
       { path: 'restaurants', component: RestaurantListComponent },
       { path: 'products', component: ProductListComponent },
       { path: 'pos', component: PosScreenComponent },
+      { path: 'orders', component: OrderListComponent },
       { path: 'reports', component: SalesReportComponent }
     ]
   }
