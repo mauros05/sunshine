@@ -1,7 +1,6 @@
 package com.mauricio.sunshine.persistence.entity;
 
 import jakarta.persistence.*;
-import org.aspectj.weaver.ast.Or;
 
 import java.math.BigDecimal;
 import java.util.UUID;

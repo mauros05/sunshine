@@ -3,8 +3,6 @@ package com.mauricio.sunshine.service;
 import com.mauricio.sunshine.api.dto.AddOrderItemRequest;
 import com.mauricio.sunshine.persistence.entity.*;
 import com.mauricio.sunshine.persistence.repository.*;
-import jakarta.servlet.http.PushBuilder;
-import org.hibernate.query.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,114 +13,112 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private final RestaurantRepository restaurantRepo;
-    private final ProductRepository productRepo;
-    private final OrderRepository orderRepo;
-    private final OrderItemRepository orderItemRepo;
+  private final RestaurantRepository restaurantRepo;
+  private final ProductRepository productRepo;
+  private final OrderRepository orderRepo;
+  private final OrderItemRepository orderItemRepo;
 
-    public OrderService(RestaurantRepository restaurantRepo,
-                        ProductRepository productRepo,
-                        OrderRepository orderRepo,
-                        OrderItemRepository orderItemRepo
-                        ) {
-        this.restaurantRepo = restaurantRepo;
-        this.productRepo = productRepo;
-        this.orderRepo = orderRepo;
-        this.orderItemRepo = orderItemRepo;
+  public OrderService(RestaurantRepository restaurantRepo,
+                      ProductRepository productRepo,
+                      OrderRepository orderRepo,
+                      OrderItemRepository orderItemRepo
+                      ) {
+      this.restaurantRepo = restaurantRepo;
+      this.productRepo = productRepo;
+      this.orderRepo = orderRepo;
+      this.orderItemRepo = orderItemRepo;
+  }
+
+  @Transactional
+  public OrderEntity createOrder(UUID restaurantId, List<AddOrderItemRequest> items) {
+    RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+
+    OrderEntity order = new OrderEntity(restaurant);
+    OrderEntity savedOrder = orderRepo.save(order);
+
+    for (AddOrderItemRequest item : items) {
+        addItemToOrder(savedOrder, restaurantId, item.productId(), item.quantity());
     }
 
-    @Transactional
-    public OrderEntity createOrder(UUID restaurantId, List<AddOrderItemRequest> items) {
-        RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+    recalculateTotal(savedOrder);
 
-        OrderEntity order = new OrderEntity(restaurant);
-        OrderEntity savedOrder = orderRepo.save(order);
+    return savedOrder;
+  }
 
-        for (AddOrderItemRequest item : items) {
-            addItemToOrder(savedOrder, restaurantId, item.productId(), item.quantity());
-        }
+  @Transactional
+  public OrderEntity addItem(UUID restaurantId, UUID orderId, UUID productId, Integer quantity) {
+    OrderEntity order = orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
 
-        recalculateTotal(savedOrder);
-
-        return savedOrder;
+    if (order.getStatus() != OrderStatus.OPEN) {
+        throw new IllegalArgumentException("Solo Ordenes en OPEN pueden ser modificadas");
     }
 
-    @Transactional
-    public OrderEntity addItem(UUID restaurantId, UUID orderId, UUID productId, Integer quantity) {
-        OrderEntity order = orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
+    addItemToOrder(order, restaurantId, productId, quantity);
 
-        if (order.getStatus() != OrderStatus.OPEN) {
-            throw new IllegalArgumentException("Solo Ordenes en OPEN pueden ser modificadas");
-        }
+    recalculateTotal(order);
 
-        addItemToOrder(order, restaurantId, productId, quantity);
+    return order;
+  }
 
-        recalculateTotal(order);
+  @Transactional(readOnly = true)
+  public OrderEntity getOrder(UUID restaurantId, UUID orderId) {
+      return orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
+              .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
+  }
 
-        return order;
+  @Transactional(readOnly = true)
+  public List<OrderItemEntity> getItems(UUID orderId) {
+    return orderItemRepo.findByOrderId(orderId);
+  }
+
+  @Transactional(readOnly = true)
+  public List<OrderEntity> getOrdersByRestaurant(UUID restaurantId, OrderStatus status){
+    if (!restaurantRepo.existsById(restaurantId)) {
+        throw new IllegalArgumentException("Restaurante no encontrado");
     }
 
-    @Transactional(readOnly = true)
-    public OrderEntity getOrder(UUID restaurantId, UUID orderId) {
-        return orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
+    if (status == null) {
+        return orderRepo.findByRestaurantId(restaurantId);
     }
 
-    @Transactional(readOnly = true)
-    public List<OrderItemEntity> getItems(UUID orderId) {
-        return orderItemRepo.findByOrderId(orderId);
+    return orderRepo.findByRestaurantIdAndStatus(restaurantId, status);
+  }
+
+  @Transactional
+  public OrderEntity cancelOrder(UUID restaurantId, UUID orderId) {
+    OrderEntity order = orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Orden no encontada"));
+
+    if (order.getStatus() != OrderStatus.OPEN) {
+        throw new IllegalArgumentException("Solo se pueden cancelar los pedidos ABIERTOS.");
     }
 
-    @Transactional(readOnly = true)
-    public List<OrderEntity> getOrdersByRestaurant(UUID restaurantId, OrderStatus status){
-        if (!restaurantRepo.existsById(restaurantId)) {
-            throw new IllegalArgumentException("Restaurante no encontrado");
-        }
+    order.setStatus(OrderStatus.CANCELLED);
+    return orderRepo.save(order);
+  }
 
-        if (status == null) {
-            return orderRepo.findByRestaurantId(restaurantId);
-        }
+  private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {
+    ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
-        return orderRepo.findByRestaurantIdAndStatus(restaurantId, status);
+    if (!product.isActive()) {
+        throw new IllegalArgumentException("El producto esta inactivo");
     }
 
-    @Transactional
-    public OrderEntity cancelOrder(UUID restaurantId, UUID orderId) {
-        OrderEntity order = orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontada"));
+    OrderItemEntity item = new OrderItemEntity(order, product, quantity, product.getPrice());
+    orderItemRepo.save(item);
+  }
 
-        if (order.getStatus() != OrderStatus.OPEN) {
-            throw new IllegalArgumentException("Solo se pueden cancelar los pedidos ABIERTOS.");
-        }
+  private void recalculateTotal(OrderEntity order) {
+    List<OrderItemEntity> items = orderItemRepo.findByOrderId(order.getId());
 
-        order.setStatus(OrderStatus.CANCELLED);
-        return orderRepo.save(order);
-    }
+    BigDecimal total = items.stream()
+            .map(OrderItemEntity::getSubtotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {
-        ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-
-        if (!product.isActive()) {
-            throw new IllegalArgumentException("El producto esta inactivo");
-        }
-
-        OrderItemEntity item = new OrderItemEntity(order, product, quantity, product.getPrice());
-        orderItemRepo.save(item);
-    }
-
-    private void recalculateTotal(OrderEntity order) {
-        List<OrderItemEntity> items = orderItemRepo.findByOrderId(order.getId());
-
-        BigDecimal total = items.stream()
-                .map(OrderItemEntity::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        order.setTotal(total);
-        orderRepo.save(order);
-    }
-
-
+    order.setTotal(total);
+    orderRepo.save(order);
+  }
 }
