@@ -219,7 +219,6 @@ export class PosScreenComponent implements OnInit {
         this.currentOrder = order;
       },
       error: () => {
-        // non-blocking: keep latest order data from previous response
       }
     });
   }

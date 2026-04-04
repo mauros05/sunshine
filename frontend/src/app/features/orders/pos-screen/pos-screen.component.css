@@ -24,12 +24,17 @@
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 }
 
 .product-card {
   padding: 12px;
+}
+
+.quantity-field {
+  width: 100%;
+  margin-top: 8px;
 }
 
 .full-width {
@@ -42,6 +47,16 @@
   margin-top: 16px;
 }
 
+.items-list {
+  padding-left: 18px;
+}
+
 .error {
-  color: red;
+  color: #b00020;
+  font-weight: 500;
+}
+
+.success {
+  color: #1b5e20;
+  font-weight: 500;
 }
