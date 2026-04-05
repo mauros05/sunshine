@@ -54,7 +54,7 @@ export class OrderListComponent implements OnInit {
         this.restaurants = data;
         if (data.length > 0) {
           this.selectedRestaurantId = data[0].id;
-          this.loadOrders;
+          this.loadOrders();
         }
       },
       error: () => {
