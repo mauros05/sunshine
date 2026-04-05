@@ -1,16 +1,6 @@
 <section class="page">
   <h1>POS Screen</h1>
-
-  <mat-form-field appearance="outline" class="restaurant-select">
-    <mat-label>Restaurante</mat-label>
-    <mat-select [value]="selectedRestaurantId" (valueChange)="onRestaurantChange($event)">
-      @for (restaurant of restaurants; track restaurant.id) {
-      <mat-option [value]="restaurant.id">
-        {{ restaurant.name }}
-      </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <p class="subtitle">Restaurante actual: <strong>{{ restaurantName }}</strong></p>
 
   <div class="actions">
     <button mat-raised-button color="primary" (click)="createOrder()">
@@ -27,7 +17,6 @@
   }
 
   <div class="layout">
-    <!-- Productos -->
     <section class="left-panel">
       <h2>Productos</h2>
 
@@ -54,7 +43,6 @@
       </div>
     </section>
 
-    <!-- Orden actual -->
     <section class="right-panel">
       <h2>Orden actual</h2>
 
@@ -95,12 +83,7 @@
           </mat-form-field>
 
           <div class="order-actions">
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="payOrder()"
-              [disabled]="currentOrder.items.length === 0 || currentOrder.total <= 0"
-            >
+            <button mat-raised-button color="primary" (click)="payOrder()">
               Pagar
             </button>
 

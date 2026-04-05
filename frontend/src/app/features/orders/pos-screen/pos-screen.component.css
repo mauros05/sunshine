@@ -2,8 +2,9 @@
   padding: 24px;
 }
 
-.restaurant-select {
-  width: 320px;
+.subtitle {
+  margin-top: 8px;
+  color: #555;
 }
 
 .actions {

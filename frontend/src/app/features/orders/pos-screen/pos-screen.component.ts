@@ -1,19 +1,19 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from "@angular/forms";
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInput } from '@angular/material/input';
-import { FormsModule } from "@angular/forms";
+import { MatInputModule } from '@angular/material/input';
 
-import { Restaurant } from '../../../core/models/restaurant.model';
 import { Product } from '../../../core/models/product.model';
 import { Order } from '../../../core/models/order.model';
 
-import { RestaurantsService } from '../../../core/services/restaurants.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { OrdersService } from '../../../core/services/orders.service';
+import { SessionService } from '../../../core/services/session.service';
 
 @Component({
   selector: 'app-pos-screen',
@@ -24,21 +24,22 @@ import { OrdersService } from '../../../core/services/orders.service';
     MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInput,
+    MatInputModule,
     FormsModule
   ],
   templateUrl: './pos-screen.component.html',
   styleUrl: './pos-screen.component.css'
 })
 export class PosScreenComponent implements OnInit {
-  private restaurantsService = inject(RestaurantsService);
   private productsService = inject(ProductsService);
   private ordersService = inject(OrdersService);
+  private sessionService = inject(SessionService);
+  private router = inject(Router);
 
-  restaurants: Restaurant[] = [];
   products: Product[] = [];
 
   selectedRestaurantId = '';
+  restaurantName = '';
   currentOrder: Order | null = null;
 
   loading = false;
@@ -50,31 +51,14 @@ export class PosScreenComponent implements OnInit {
   quantities: Record<string, number> = {};
 
   ngOnInit(): void {
-    this.loadRestaurants();
-  }
+    this.selectedRestaurantId = this.sessionService.getCurrentRestaurantId();
+    this.restaurantName = this.sessionService.getCurrentRestaurantName();
 
-  loadRestaurants(): void {
-    this.restaurantsService.getRestaurants().subscribe({
-      next: (data) => {
-        this.restaurants = data;
-        if (data.length > 0) {
-          this.selectedRestaurantId = data[0].id;
-          this.loadProducts();
-          this.loadOpenOrderIfExist();
-        }
-      },
-      error: () => {
-        this.error = 'No se pudieron cargar los restaurantes';
-      }
-    });
-  }
+    if(!this.selectedRestaurantId) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
-  onRestaurantChange(restaurantId: string): void {
-    this.selectedRestaurantId = restaurantId;
-    this.currentOrder = null;
-    this.successMessage = '';
-    this.error = '';
-    this.quantities = {};
     this.loadProducts();
     this.loadOpenOrderIfExist();
   }
@@ -85,6 +69,11 @@ export class PosScreenComponent implements OnInit {
     this.productsService.getProducts(this.selectedRestaurantId).subscribe({
       next: (data) => {
         this.products = data.filter(product => product.active);
+
+        this.quantities = {};
+        this.products.forEach(product => {
+          this.quantities[product.id] = 1;
+        })
       },
       error: () => {
         this.error = 'No se pudieron cargar los productos';
