@@ -27,7 +27,7 @@ public class UserService {
   @Transactional
   public UserEntity createUser(String fullName, String email) {
     if (userRepo.existsByEmail(email)) {
-      throw new IllegalAccessError("Email already exists");
+      throw new IllegalArgumentException("Email already exists");
     }
 
     UserEntity user = new UserEntity(fullName, email);
@@ -63,5 +63,4 @@ public class UserService {
 
     return membershipRepo.findByRestaurantId(restaurantId);
   }
-
 }
