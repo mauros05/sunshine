@@ -1,15 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-
 
 import { Product } from "../../../core/models/product.model";
-import { Restaurant } from '../../../core/models/restaurant.model';
 import { ProductsService } from "../../../core/services/products.service";
-import { RestaurantsService } from '../../../core/services/restaurants.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { SessionService } from '../../../core/services/session.service';
 
 @Component({
   selector: 'app-product-list',
@@ -17,8 +14,6 @@ import { ProductFormComponent } from '../product-form/product-form.component';
   imports: [
     CommonModule,
     MatCardModule,
-    MatFormFieldModule,
-    MatSelectModule,
     ProductFormComponent
   ],
   templateUrl: './product-list.component.html',
@@ -27,44 +22,31 @@ import { ProductFormComponent } from '../product-form/product-form.component';
 
 export class ProductListComponent implements OnInit {
   private productsService = inject(ProductsService);
-  private restaurantsService = inject(RestaurantsService);
+  private sessionService = inject(SessionService);
+  private router = inject(Router);
 
-  restaurants: Restaurant[] = [];
   products: Product[] = [];
 
-  selectedRestaurantId = '';
+  restaurantId = '';
+  restaurantName = '';
 
-  loadingRestaurants = false;
   loadingProducts = false;
   error = '';
 
   ngOnInit(): void {
-    this.loadRestaurants();
-  }
+    this.restaurantId = this.sessionService.getCurrentRestaurantId();
+    this.restaurantName = this.sessionService.getCurrentRestaurantName();
 
-  loadRestaurants(): void {
-    this.loadingRestaurants = true;
-    this.error = '';
+    if (!this.restaurantId) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
-    this.restaurantsService.getRestaurants().subscribe({
-      next: (data) => {
-        this.restaurants = data;
-        this.loadingRestaurants = false;
-
-        if (data.length > 0) {
-          this.selectedRestaurantId = data[0].id;
-          this.loadProducts();
-        }
-      },
-      error: () => {
-        this.loadingRestaurants = false;
-        this.error = 'No se pudieron cargar los restaurantes';
-      }
-    });
+    this.loadProducts();
   }
 
   loadProducts(): void {
-    if(!this.selectedRestaurantId) {
+    if(!this.restaurantId) {
       this.products = [];
       return;
     }
@@ -72,7 +54,7 @@ export class ProductListComponent implements OnInit {
     this.loadingProducts = true;
     this.error = ''
 
-    this.productsService.getProducts(this.selectedRestaurantId).subscribe({
+    this.productsService.getProducts(this.restaurantId).subscribe({
       next: (data) => {
         this.products = data;
         this.loadingProducts = false;
@@ -84,13 +66,8 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  onRestaurantChange(restaurantId: string): void {
-    this.selectedRestaurantId = restaurantId;
-    this.loadProducts();
-  }
-
   onProductCreated(product: Product): void {
-    if (product.restaurantId === this.selectedRestaurantId) {
+    if (product.restaurantId === this.restaurantId) {
       // optimistic update so the UI reflects creation immediately
       this.products = [product, ...this.products];
     }
