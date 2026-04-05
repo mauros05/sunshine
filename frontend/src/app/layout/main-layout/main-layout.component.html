@@ -1,5 +1,15 @@
 <mat-toolbar color="primary" class="toolbar">
-  <span>Sunshine POS</span>
+  <div>
+    <span>Sunshine POS</span>
+  </div>
+
+  <div class="toolbar-right">
+    <span class="meta">@if (restaurantName) { {{ restaurantName }} }</span>
+    <span class="meta">@if (userName) { {{ userName }} ({{ role }}) }</span>
+    <button mat-button (click)="logout()">Logout</button>
+  </div>
+
+
 </mat-toolbar>
 
 <mat-sidenav-container class="layout-container">

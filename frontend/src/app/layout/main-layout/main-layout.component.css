@@ -2,6 +2,23 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+}
+
+.toolbar-left {
+  font-weight: 600;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.meta {
+  font-size: 14px;
+  opacity: 0.95;
 }
 
 .layout-container {

@@ -8,5 +8,5 @@ export interface LoginResponse {
   userId: string;
   fullName: string;
   email: string;
-  membership: LoginMembership[];
+  memberships: LoginMembership[];
 }
