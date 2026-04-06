@@ -1,15 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 
-import { Restaurant } from '../../../core/models/restaurant.model';
 import { Order } from '../../../core/models/order.model';
-import { RestaurantsService } from '../../../core/services/restaurants.service';
 import { OrdersService } from '../../../core/services/orders.service';
-
+import { SessionService } from '../../../core/services/session.service';
 
 @Component({
   selector: 'app-order-list',
@@ -25,13 +24,14 @@ import { OrdersService } from '../../../core/services/orders.service';
   styleUrl: './order-list.component.css',
 })
 export class OrderListComponent implements OnInit {
-  private restaurantsService = inject(RestaurantsService);
+  private sessionService = inject(SessionService);
   private ordersService = inject(OrdersService);
+  private router = inject(Router);
 
-  restaurants: Restaurant[] = [];
   orders: Order[] = [];
 
-  selectedRestaurantId = '';
+  restaurantId = '';
+  restaurantName = '';
   selectedStatus = '';
 
   loading = false;
@@ -45,33 +45,26 @@ export class OrderListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadRestaurants();
-  }
+    this.restaurantId = this.sessionService.getCurrentRestaurantId();
+    this.restaurantName = this.sessionService.getCurrentRestaurantName();
 
-  loadRestaurants(): void {
-    this.restaurantsService.getRestaurants().subscribe({
-      next: (data) => {
-        this.restaurants = data;
-        if (data.length > 0) {
-          this.selectedRestaurantId = data[0].id;
-          this.loadOrders();
-        }
-      },
-      error: () => {
-        this.error = 'No se pudieron cargar los restaurantes';
-      }
-    });
+    if (!this.restaurantId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.loadOrders();
   }
 
   loadOrders(): void {
-    if (!this.selectedRestaurantId) return;
+    if (!this.restaurantId) return;
 
     this.loading = true;
     this.error = '';
 
     const status = this.selectedStatus || undefined;
 
-    this.ordersService.getOrders(this.selectedRestaurantId, status).subscribe({
+    this.ordersService.getOrders(this.restaurantId, status).subscribe({
       next: (data) => {
         this.orders = data;
         this.loading = false;
@@ -81,11 +74,6 @@ export class OrderListComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  onRestaurantChange(restaurantId: string): void {
-    this.selectedRestaurantId = restaurantId;
-    this.loadOrders();
   }
 
   onStatusChange(status: string): void {

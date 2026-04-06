@@ -1,18 +1,8 @@
 <section class="page">
   <h1>Órdenes</h1>
+  <p class="subtitle">Restaurante actual: <strong>{{ restaurantName }}</strong></p>
 
   <div class="filters">
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Restaurante</mat-label>
-      <mat-select [value]="selectedRestaurantId" (valueChange)="onRestaurantChange($event)">
-        @for (restaurant of restaurants; track restaurant.id) {
-        <mat-option [value]="restaurant.id">
-          {{ restaurant.name }}
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Status</mat-label>
       <mat-select [value]="selectedStatus" (valueChange)="onStatusChange($event)">

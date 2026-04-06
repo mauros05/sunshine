@@ -2,6 +2,11 @@
   padding: 24px;
 }
 
+.subtitle {
+  margin-top: 8px;
+  color: #555;
+}
+
 .filters {
   display: flex;
   gap: 16px;
