@@ -34,6 +34,11 @@ export class ProductListComponent implements OnInit {
   error = '';
 
   ngOnInit(): void {
+    if (!this.sessionService.canViewProducts()) {
+      this.router.navigate(['/pos']);
+      return;
+    }
+
     this.restaurantId = this.sessionService.getCurrentRestaurantId();
     this.restaurantName = this.sessionService.getCurrentRestaurantName();
 

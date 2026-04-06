@@ -33,6 +33,11 @@ export class SalesReportComponent implements OnInit {
   error = '';
 
   ngOnInit(): void {
+    if (!this.sessionService.canViewReports()) {
+      this.router.navigate(['/pos']);
+      return;
+    }
+
     this.restaurantId = this.sessionService.getCurrentRestaurantId();
     this.restaurantName = this.sessionService.getCurrentRestaurantName();
 
