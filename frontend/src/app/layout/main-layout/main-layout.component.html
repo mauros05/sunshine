@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="toolbar">
-  <div>
+  <div class="toolbar-left">
     <span>Sunshine POS</span>
   </div>
 
@@ -8,32 +8,42 @@
     <span class="meta">@if (userName) { {{ userName }} ({{ role }}) }</span>
     <button mat-button (click)="logout()">Logout</button>
   </div>
-
-
 </mat-toolbar>
 
 <mat-sidenav-container class="layout-container">
   <mat-sidenav mode="side" opened class="sidenav">
     <mat-nav-list>
+
+      @if (canViewRestaurants) {
       <a mat-list-item routerLink="/restaurants" routerLinkActive="active-link">
         Restaurants
       </a>
+      }
 
+      @if (canViewProducts) {
       <a mat-list-item routerLink="/products" routerLinkActive="active-link">
         Products
       </a>
+      }
 
+      @if (canViewPos) {
       <a mat-list-item routerLink="/pos" routerLinkActive="active-link">
         POS
       </a>
+      }
 
+      @if (canViewOrders) {
       <a mat-list-item routerLink="/orders" routerLinkActive="active-link">
         Orders
       </a>
+      }
 
+      @if (canViewReports) {
       <a mat-list-item routerLink="/reports" routerLinkActive="active-link">
         Reports
       </a>
+      }
+
     </mat-nav-list>
   </mat-sidenav>
 

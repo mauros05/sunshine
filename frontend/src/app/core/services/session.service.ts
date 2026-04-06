@@ -39,8 +39,8 @@ export class SessionService {
     return this.getSession()?.fullName ?? '';
   }
 
-  getCurrentRole(): string {
-    return this.getCurrentRestaurant()?.role ?? '';
+  getCurrentRole(): 'OWNER' | 'MANAGER' | 'CASHIER' | '' {
+    return (this.getCurrentRestaurant()?.role as 'OWNER' | 'MANAGER' | 'CASHIER') ?? '' ;
   }
 
   getCurrentRestaurantId(): string {
@@ -50,4 +50,37 @@ export class SessionService {
   getCurrentRestaurantName(): string {
     return this.getCurrentRestaurant()?.restaurantName ?? '';
   }
+
+  isOwner(): boolean {
+    return this.getCurrentRole() === 'OWNER';
+  }
+
+  isManager(): boolean {
+    return this.getCurrentRole() === 'MANAGER';
+  }
+
+  isCashier(): boolean {
+    return this.getCurrentRole() === 'CASHIER';
+  }
+
+  canViewRestaurants(): boolean {
+    return this.isOwner();
+  }
+
+  canViewProducts(): boolean {
+    return this.isOwner() || this.isManager();
+  }
+
+  canViewPos(): boolean {
+    return this.isOwner() || this.isManager() || this.isCashier();
+  }
+
+  canViewOrders(): boolean {
+    return this.isOwner() || this.isManager() || this.isCashier();
+  }
+
+  canViewReports(): boolean {
+    return this.isOwner() || this.isManager();
+  }
+
 }

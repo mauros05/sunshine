@@ -44,6 +44,26 @@ export class MainLayoutComponent implements OnInit {
     return this.sessionService.getCurrentRole();
   }
 
+  get canViewRestaurants(): boolean {
+    return this.sessionService.canViewRestaurants();
+  }
+
+  get canViewProducts(): boolean {
+    return this.sessionService.canViewProducts();
+  }
+
+  get canViewPos(): boolean {
+    return this.sessionService.canViewPos();
+  }
+
+  get canViewOrders(): boolean {
+    return this.sessionService.canViewOrders();
+  }
+
+  get canViewReports(): boolean {
+    return this.sessionService.canViewReports();
+  }
+
   logout(): void {
     this.sessionService.clearSession();
     this.router.navigate(['/login']);
