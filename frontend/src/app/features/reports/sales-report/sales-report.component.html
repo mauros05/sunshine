@@ -1,20 +1,10 @@
 <section class="page">
   <h1>Sales Report</h1>
-
-  <mat-form-field appearance="outline" class="restaurant-select">
-    <mat-label>Restaurante</mat-label>
-    <mat-select [(value)]="selectedRestaurantId">
-      @for (restaurant of restaurants; track restaurant.id) {
-      <mat-option [value]="restaurant.id">
-        {{ restaurant.name }}
-      </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <p class="subtitle">Restaurante actual: <strong>{{ restaurantName }}</strong></p>
 
   <div class="actions">
-    <button mat-raised-button color="primary" (click)="loadReport()" [disabled]="!selectedRestaurantId || loading">
-      Consultar reporte
+    <button mat-raised-button color="primary" (click)="loadReport()" [disabled]="loading">
+      Refrescar reporte
     </button>
   </div>
 
