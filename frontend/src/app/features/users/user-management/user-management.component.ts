@@ -70,8 +70,8 @@ export class UserManagementComponent implements OnInit {
       return;
     }
 
-    this.loadUsers
-
+    this.loadUsers();
+    this.loadMembers();
   }
 
   loadUsers(): void {
@@ -84,6 +84,68 @@ export class UserManagementComponent implements OnInit {
       error: () => {
         this.error = 'No se pudieron cargar los usuarios';
         this.loadingUsers = false;
+      }
+    });
+  }
+
+  loadMembers(): void {
+    this.loadingMembers = true;
+    this.userService.getRestaurantMembers(this.restaurantId).subscribe({
+      next: (data) => {
+        this.members = data;
+        this.loadingMembers = false;
+      },
+      error: () => {
+        this.error = 'No se pudieron cargar los miembros';
+        this.loadingMembers = false;
+      }
+    });
+  }
+
+  createUser(): void {
+    if (this.createUserForm.invalid) {
+      this.createUserForm.markAllAsTouched();
+      return;
+    }
+
+    this.error = '';
+    this.successMessage = '';
+
+    this.userService.createUser({
+      fullName: this.createUserForm.value.fullName!,
+      email: this.createUserForm.value.email!
+    }).subscribe({
+      next: () => {
+        this.successMessage = "Usuario creado correctamente";
+        this.createUserForm.reset();
+        this.loadUsers();
+      },
+      error: () => {
+        this.error = 'No se pudo crear el usuario'
+      }
+    })
+  }
+
+  addUserToRestaurant(): void {
+    if (this.addMemberForm.invalid) {
+      this.addMemberForm.markAllAsTouched();
+      return;
+    }
+
+    this.error = '';
+    this.successMessage = '';
+
+    this.userService.addUserToRestaurant(this.restaurantId, {
+      userId: this.addMemberForm.value.userId!,
+      role: this.addMemberForm.value.role!
+    }).subscribe({
+      next: () => {
+        this.successMessage = 'Usuario agregado al restaurante correctamente.';
+        this.addMemberForm.patchValue({ userId: '', role: 'CASHIER'});
+        this.loadMembers();
+      },
+      error: () => {
+        this.error = 'No se pudo agregar el usuario al restaurante';
       }
     });
   }
