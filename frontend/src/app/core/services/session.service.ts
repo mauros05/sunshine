@@ -83,4 +83,7 @@ export class SessionService {
     return this.isOwner() || this.isManager();
   }
 
+  canViewUsers(): boolean {
+    return this.isOwner();
+  }
 }

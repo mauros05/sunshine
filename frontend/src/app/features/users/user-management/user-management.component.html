@@ -1,1 +1,91 @@
-<p>user-management works!</p>
+<section class="page">
+  <h1>Gestión de usuarios</h1>
+  <p class="subtitle">Restaurante actual: <strong>{{ restaurantName }}</strong></p>
+
+  @if (error) {
+  <p class="error">{{ error }}</p>
+  }
+
+  @if (successMessage) {
+  <p class="success">{{ successMessage }}</p>
+  }
+
+  <div class="layout">
+    <mat-card class="card">
+      <mat-card-title>Crear usuario</mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="createUserForm" (ngSubmit)="createUser()" class="form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre completo</mat-label>
+            <input matInput formControlName="fullName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit">
+            Crear usuario
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card">
+      <mat-card-title>Agregar usuario al restaurante</mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="addMemberForm" (ngSubmit)="addUserToRestaurant()" class="form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Usuario</mat-label>
+            <mat-select formControlName="userId">
+              @for (user of users; track user.id) {
+              <mat-option [value]="user.id">
+                {{ user.fullName }} - {{ user.email }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="role">
+              @for (role of roleOptions; track role) {
+              <mat-option [value]="role">
+                {{ role }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-raised-button color="accent" type="submit">
+            Agregar al restaurante
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="members-card">
+    <mat-card-title>Miembros del restaurante</mat-card-title>
+    <mat-card-content>
+      @if (loadingMembers) {
+      <p>Cargando miembros...</p>
+      }
+
+      @if (!loadingMembers && members.length === 0) {
+      <p>No hay miembros registrados.</p>
+      }
+
+      <div class="members-grid">
+        @for (member of members; track member.id) {
+        <div class="member-row">
+          <p><strong>{{ member.userName }}</strong></p>
+          <p>{{ member.userEmail }}</p>
+          <p>Rol: {{ member.role }}</p>
+        </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>

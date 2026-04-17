@@ -64,6 +64,10 @@ export class MainLayoutComponent implements OnInit {
     return this.sessionService.canViewReports();
   }
 
+  get canViewUsers(): boolean {
+    return this.sessionService.canViewUsers();
+  }
+
   logout(): void {
     this.sessionService.clearSession();
     this.router.navigate(['/login']);

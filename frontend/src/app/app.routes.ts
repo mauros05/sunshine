@@ -6,6 +6,7 @@ import { ProductListComponent } from './features/products/product-list/product-l
 import { PosScreenComponent } from './features/orders/pos-screen/pos-screen.component';
 import { OrderListComponent } from './features/orders/order-list/order-list.component';
 import { SalesReportComponent } from './features/reports/sales-report/sales-report.component';
+import { UserManagementComponent } from './features/users/user-management/user-management.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -18,7 +19,8 @@ export const routes: Routes = [
       { path: 'products', component: ProductListComponent },
       { path: 'pos', component: PosScreenComponent },
       { path: 'orders', component: OrderListComponent },
-      { path: 'reports', component: SalesReportComponent }
+      { path: 'reports', component: SalesReportComponent },
+      { path: 'users', component: UserManagementComponent }
     ]
   }
 ];

@@ -38,6 +38,12 @@
       </a>
       }
 
+      @if (canViewUsers) {
+      <a mat-list-item routerLink="/users" routerLinkActive="active-link">
+        Users
+      </a>
+      }
+
       @if (canViewReports) {
       <a mat-list-item routerLink="/reports" routerLinkActive="active-link">
         Reports

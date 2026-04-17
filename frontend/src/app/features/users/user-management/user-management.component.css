@@ -1,0 +1,58 @@
+.page {
+  padding: 24px;
+}
+
+.subtitle {
+  margin-top: 8px;
+  color: #555;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.card,
+.members-card {
+  padding: 16px;
+}
+
+.members-card {
+  margin-top: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.members-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.member-row {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.error {
+  color: #b00020;
+  font-weight: 500;
+}
+
+.success {
+  color: #1b5e20;
+  font-weight: 500;
+}
