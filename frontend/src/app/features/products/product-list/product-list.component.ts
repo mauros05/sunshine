@@ -1,7 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { Product } from "../../../core/models/product.model";
 import { ProductsService } from "../../../core/services/products.service";
@@ -32,6 +36,14 @@ export class ProductListComponent implements OnInit {
 
   loadingProducts = false;
   error = '';
+  successMessage = '';
+
+  editingProductId: string | null = null;
+  editModel = {
+    name: '',
+    price: 0,
+    category: ''
+  };
 
   ngOnInit(): void {
     if (!this.sessionService.canViewProducts()) {
@@ -58,6 +70,7 @@ export class ProductListComponent implements OnInit {
 
     this.loadingProducts = true;
     this.error = ''
+    this.successMessage = '';
 
     this.productsService.getProducts(this.restaurantId).subscribe({
       next: (data) => {
@@ -69,6 +82,26 @@ export class ProductListComponent implements OnInit {
         this.error = 'No se pudieron cargar productos'
       }
     });
+  }
+
+  startEdit(product: Product): void {
+    this.editingProductId = product.id;
+    this.editModel = {
+      name: product.name,
+      price: product.price,
+      category: product.category
+    };
+    this.error = '';
+    this.successMessage = '';
+  }
+
+  cancelEdit(): void {
+    this.editingProductId = null;
+    this.editModel = {
+      name: '',
+      price: 0,
+      category: ''
+    };
   }
 
   onProductCreated(product: Product): void {

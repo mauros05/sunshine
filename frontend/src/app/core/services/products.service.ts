@@ -18,4 +18,18 @@ export class ProductsService {
   createProduct(restaurantId: string, payload: CreateProductRequest): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/${restaurantId}/products`, payload);
   }
+
+  updateProduct(restaurantId: string, productId: string, payload: CreateProductRequest) {
+    return this.http.put<Product>(
+      `${this.baseUrl}/${restaurantId}/products/${productId}`,
+      payload
+    );
+  }
+
+  updateProductStatus(restaurantId: string, productId: string, active: boolean) {
+    return this.http.patch<Product>(
+      `${this.baseUrl}/${restaurantId}/products/${productId}/status`,
+      { active }
+    );
+  }
 }
