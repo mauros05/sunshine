@@ -13,42 +13,61 @@ import java.util.UUID;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepo;
-    private final RestaurantRepository restaurantRepo;
+  private final ProductRepository productRepo;
+  private final RestaurantRepository restaurantRepo;
 
-    public ProductService(ProductRepository productRepo, RestaurantRepository restaurantRepo){
-        this.productRepo = productRepo;
-        this.restaurantRepo = restaurantRepo;
+  public ProductService(ProductRepository productRepo, RestaurantRepository restaurantRepo){
+    this.productRepo = productRepo;
+    this.restaurantRepo = restaurantRepo;
+  }
+
+  public ProductEntity createProduct(UUID restaurantId, String name, BigDecimal price, String category) {
+    RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+
+    ProductEntity product = new ProductEntity(restaurant, name, price, category);
+    return productRepo.save(product);
+  }
+
+  public List<ProductEntity> getProductsByRestaurant(UUID restaurantId){
+    if (!restaurantRepo.existsById(restaurantId)) {
+        throw new IllegalArgumentException("Restaurante no econtrado");
     }
 
-    public ProductEntity createProduct(UUID restaurantId, String name, BigDecimal price, String category) {
-        RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
+    return productRepo.findByRestaurantId(restaurantId);
+  }
 
-        ProductEntity product = new ProductEntity(restaurant, name, price, category);
-        return productRepo.save(product);
-    }
+  public ProductEntity getProduct(UUID restaurantId, UUID productId) {
+    return productRepo.findByIdAndRestaurantId(productId, restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+  }
 
-    public List<ProductEntity> getProductsByRestaurant(UUID restaurantId){
-        if (!restaurantRepo.existsById(restaurantId)) {
-            throw new IllegalArgumentException("Restaurante no econtrado");
-        }
+  public ProductEntity deactivateProduct(UUID restaurantId, UUID productId) {
+    ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
-        return productRepo.findByRestaurantId(restaurantId);
-    }
+    product.setActive(false);
 
-    public ProductEntity getProduct(UUID restaurantId, UUID productId) {
-        return productRepo.findByIdAndRestaurantId(productId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-    }
+    return productRepo.save(product);
+  }
 
-    public ProductEntity deactivateProduct(UUID restaurantId, UUID productId) {
-        ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+  public ProductEntity updateProduct(UUID restaurantId, UUID productId, String name, BigDecimal price, String category) {
+    ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
+          .orElseThrow(() -> new IllegalArgumentException("Producto no encontado"));
 
-        product.setActive(false);
+    product.setName(name);
+    product.setPrice(price);
+    product.setCategory(category);
 
-        return productRepo.save(product);
-    }
+    return productRepo.save(product);
+  }
 
+  public ProductEntity updateProducStatus(UUID restaurantId, UUID productId, boolean active) {
+    ProductEntity product = productRepo.findByIdAndRestaurantId(productId, restaurantId)
+          .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+    product.setActive(active);
+
+    return productRepo.save(product);
+  }
 }
