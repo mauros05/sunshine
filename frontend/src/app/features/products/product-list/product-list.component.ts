@@ -17,8 +17,12 @@ import { SessionService } from '../../../core/services/session.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatCardModule,
-    ProductFormComponent
+    MatButtonModule,
+    ProductFormComponent,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
@@ -102,6 +106,41 @@ export class ProductListComponent implements OnInit {
       price: 0,
       category: ''
     };
+  }
+
+  saveEdit(productId: string): void {
+    this.error = '';
+    this.successMessage = '';
+
+    this.productsService.updateProduct(this.restaurantId, productId, {
+      name: this.editModel.name,
+      price: Number(this.editModel.price),
+      category: this.editModel.category
+    }).subscribe({
+      next: () => {
+        this.successMessage = 'Producto actualizado correctamente';
+        this.editingProductId = null;
+        this.loadProducts();
+      },
+      error: () => {
+        this.error = 'No se pudo actualizar el producto';
+      }
+    });
+  }
+
+  toggleStatus(product: Product): void {
+    this.error = '';
+    this.successMessage = '';
+
+    this.productsService.updateProductStatus(this.restaurantId, product.id, !product.active).subscribe({
+      next: () => {
+        this.successMessage = product.active ? 'Producto desactivado correctamente.' : 'Producto activado correctamente.';
+        this.loadProducts();
+      },
+      error:() => {
+        this.error = 'No se pudo actualizar el estado del producto';
+      }
+    })
   }
 
   onProductCreated(product: Product): void {

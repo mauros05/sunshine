@@ -15,15 +15,58 @@
   <p class="error">{{ error }}</p>
   }
 
+  @if (successMessage) {
+  <p class="success">{{ successMessage }}</p>
+  }
+
   <div class="grid">
     @for (product of products; track product.id) {
     <mat-card class="card">
+      @if (editingProductId === product.id) {
+      <mat-card-title>Editando producto</mat-card-title>
+      <mat-card-content class="edit-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="editModel.name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Precio</mat-label>
+          <input matInput type="number" [(ngModel)]="editModel.price" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Categoría</mat-label>
+          <input matInput [(ngModel)]="editModel.category" />
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="saveEdit(product.id)">
+            Guardar
+          </button>
+          <button mat-raised-button color="warn" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </mat-card-content>
+      } @else {
       <mat-card-title>{{ product.name }}</mat-card-title>
       <mat-card-content>
         <p><strong>Categoría:</strong> {{ product.category }}</p>
         <p><strong>Precio:</strong> {{ product.price }}</p>
         <p><strong>Activo:</strong> {{ product.active ? 'Sí' : 'No' }}</p>
       </mat-card-content>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="startEdit(product)">
+          Editar
+        </button>
+
+        <button mat-raised-button [color]="product.active ? 'warn' : 'accent'" (click)="toggleStatus(product)">
+          {{ product.active ? 'Desactivar' : 'Activar' }}
+        </button>
+      </div>
+      }
     </mat-card>
     }
   </div>
