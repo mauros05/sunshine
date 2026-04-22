@@ -63,4 +63,24 @@ public class UserService {
 
     return membershipRepo.findByRestaurantId(restaurantId);
   }
+
+  @Transactional
+  public RestaurantMembershipEntity updateMembershipRole(UUID restaurantId, UUID membershipId, UserRole role){
+    RestaurantMembershipEntity membership = membershipRepo.findByIdAndRestaurantId(membershipId, restaurantId)
+    .orElseThrow(() -> new IllegalArgumentException("Membership not found"));
+
+    membership.setRole(role);
+    return membershipRepo.save(membership);
+  }
+
+  @Transactional
+  public void removeMembership(UUID restaurantId, UUID membershipId) {
+    RestaurantMembershipEntity membership = membershipRepo.findByIdAndRestaurantId(membershipId, restaurantId)
+    .orElseThrow(() -> new IllegalArgumentException("Membership not found"));
+
+    membershipRepo.delete(membership);
+  }
+
+
+
 }
