@@ -18,7 +18,8 @@ public interface RestaurantMembershipRepository extends JpaRepository<Restaurant
 
   Optional<RestaurantMembershipEntity> findByUserIdAndRestaurantId(UUID userId, UUID restaurantId);
 
-  Optional<RestaurantMembershipEntity> findByIdAndRestaurantId(UUID userId, UUID restaurantId);
+  @EntityGraph(attributePaths = {"user", "restaurant"})
+  Optional<RestaurantMembershipEntity> findByIdAndRestaurantId(UUID membershipId, UUID restaurantId);
 
   boolean existsByUserIdAndRestaurantId(UUID userId, UUID restaurantId);
 }

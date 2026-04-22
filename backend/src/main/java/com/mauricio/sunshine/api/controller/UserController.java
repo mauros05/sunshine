@@ -55,6 +55,29 @@ public class UserController {
     .toList();
   }
 
+  @PatchMapping("/restaurants/{restaurantId}/members/{membershipId}/role")
+  public RestaurantMembershipResponse updateMemberhsipRole(
+    @PathVariable UUID restaurantId,
+    @PathVariable UUID membershipId,
+    @Valid @RequestBody UpdateMembershipRoleRequest req
+  ){
+    RestaurantMembershipEntity membership = userService.updateMembershipRole(
+      restaurantId,
+      membershipId,
+      req.role()
+    );
+
+    return toMembershipResponse(membership);
+  }
+
+  @DeleteMapping("/restaurants/{restaurantId}/members/{membershipId}")
+  public void removeMembership(
+    @PathVariable UUID restaurantId,
+    @PathVariable UUID membershipId
+  ) {
+    userService.removeMembership(restaurantId, membershipId);
+  }
+
   private UserResponse toUserResponse(UserEntity user) {
     return new UserResponse(
       user.getId(),

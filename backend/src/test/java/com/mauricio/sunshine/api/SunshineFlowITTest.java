@@ -207,4 +207,69 @@ class PosFlowITTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
     }
+
+    @Test
+    void updateMembershipRole_shouldReturnMembershipWithUserAndRestaurantData() throws Exception {
+        String restaurantResponse = mockMvc.perform(post("/api/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "Restaurante Roles",
+                                  "address": "Monterrey"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String restaurantId = JsonTestUtils.readJsonField(restaurantResponse, "id");
+        String uniqueEmail = "rol-update-" + System.nanoTime() + "@test.com";
+
+        String userResponse = mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "fullName": "Juan Perez",
+                                  "email": "%s"
+                                }
+                                """.formatted(uniqueEmail)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String userId = JsonTestUtils.readJsonField(userResponse, "id");
+
+        String membershipResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "userId": "%s",
+                                  "role": "CASHIER"
+                                }
+                                """.formatted(userId)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String membershipId = JsonTestUtils.readJsonField(membershipResponse, "id");
+
+        mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/members/" + membershipId + "/role")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "role": "MANAGER"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(membershipId))
+                .andExpect(jsonPath("$.userId").value(userId))
+                .andExpect(jsonPath("$.userName").value("Juan Perez"))
+                .andExpect(jsonPath("$.userEmail").value(uniqueEmail))
+                .andExpect(jsonPath("$.restaurantId").value(restaurantId))
+                .andExpect(jsonPath("$.restaurantName").value("Restaurante Roles"))
+                .andExpect(jsonPath("$.role").value("MANAGER"));
+    }
 }
