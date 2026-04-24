@@ -6,6 +6,7 @@ import com.mauricio.sunshine.api.dto.UpdateProductRequest;
 import com.mauricio.sunshine.api.dto.UpdateProductStatusRequest;
 import com.mauricio.sunshine.persistence.entity.ProductEntity;
 import com.mauricio.sunshine.service.ProductService;
+import com.mauricio.sunshine.service.PermissionService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +18,22 @@ import java.util.UUID;
 public class ProductController {
 
   private final ProductService productService;
+  private final PermissionService permissionService;
 
-  public ProductController(ProductService productService) {
+  public ProductController(ProductService productService, PermissionService permissionService) {
     this.productService = productService;
+    this.permissionService = permissionService;
   }
 
   @PostMapping
   public ProductResponse createProduct(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @Valid @RequestBody CreateProductRequest req
   ) {
+
+    permissionService.requireOwnerOrManager(userId, restaurantId);
+
     ProductEntity product = productService.createProduct(
     restaurantId,
     req.name(),
@@ -37,9 +44,16 @@ public class ProductController {
   }
 
   @GetMapping
-  public List<ProductResponse> getProducts(@PathVariable UUID restaurantId) {
+  public List<ProductResponse> getProducts(
+    @RequestHeader("X-User-Id") UUID userId,
+    @PathVariable UUID restaurantId
+  ) {
+    permissionService.requireOwnerOrManagerOrCashier(userId, restaurantId);
+
     return productService.getProductsByRestaurant(restaurantId)
-            .stream().map(this::toResponse).toList();
+            .stream()
+            .map(this::toResponse)
+            .toList();
   }
 
   @GetMapping("/{productId}")
@@ -54,10 +68,14 @@ public class ProductController {
 
   @PutMapping("/{productId}")
   public ProductResponse updateProduct(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @PathVariable UUID productId,
     @Valid @RequestBody UpdateProductRequest req
   ){
+
+    permissionService.requireOwnerOrManager(userId, restaurantId);
+
     ProductEntity product = productService.updateProduct(
       restaurantId,
       productId,
@@ -71,10 +89,14 @@ public class ProductController {
 
   @PatchMapping("/{productId}/status")
   public ProductResponse updateProcutStatus(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @PathVariable UUID productId,
     @Valid @RequestBody UpdateProductStatusRequest req
   ){
+
+    permissionService.requireOwnerOrManager(userId, restaurantId);
+
     ProductEntity product = productService.updateProducStatus(
       restaurantId,
       productId,
@@ -86,10 +108,17 @@ public class ProductController {
 
   @PatchMapping("/{productId}/deactivate")
   public ProductResponse deactivateProduct(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @PathVariable UUID productId
   ) {
-    ProductEntity product = productService.deactivateProduct(restaurantId, productId);
+
+    permissionService.requireOwnerOrManager(userId, restaurantId);
+
+    ProductEntity product = productService.deactivateProduct(
+      restaurantId,
+      productId
+    );
 
     return toResponse(product);
   }

@@ -37,7 +37,7 @@ public class PermissionService {
     requireAnyRole(userId, restaurantId, UserRole.OWNER);
   }
 
-  public void requireOwnerorManager(UUID userId, UUID restaurantId) {
+  public void requireOwnerOrManager(UUID userId, UUID restaurantId) {
     requireAnyRole(userId, restaurantId, UserRole.OWNER, UserRole.MANAGER);
   }
 
