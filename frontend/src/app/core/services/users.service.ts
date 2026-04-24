@@ -37,4 +37,25 @@ export class UsersService {
       payload
     );
   }
+
+  updateMembershipRole(
+    restaurantId: string,
+    membershipId: string,
+    role: 'OWNER' | 'MANAGER' | 'CASHIER'
+  ) {
+    return this.http.patch<RestaurantMembership>(
+      `${this.baseUrl}/restaurants/${restaurantId}/members/${membershipId}/role`,
+      { role }
+    );
+  }
+
+  removeMembership(
+    restaurantId: string,
+    membershipId: string
+  ) {
+    return this.http.delete(
+      `${this.baseUrl}/restaurants/${restaurantId}/members/${membershipId}`
+    );
+  }
+
 }

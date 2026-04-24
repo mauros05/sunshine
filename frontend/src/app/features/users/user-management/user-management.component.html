@@ -82,7 +82,39 @@
         <div class="member-row">
           <p><strong>{{ member.userName }}</strong></p>
           <p>{{ member.userEmail }}</p>
+
+          @if (editingMembershipId === member.id) {
+          <mat-form-field appearance="outline" class="role-field">
+            <mat-label>Rol</mat-label>
+            <mat-select [(value)]="selectedRole">
+              @for (role of roleOptions; track role) {
+              <mat-option [value]="role">
+                {{ role }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="member-actions">
+            <button mat-raised-button color="primary" (click)="saveRole(member.id)">
+              Guardar rol
+            </button>
+            <button mat-raised-button color="warn" (click)="cancelEditRole()">
+              Cancelar
+            </button>
+          </div>
+          } @else {
           <p>Rol: {{ member.role }}</p>
+
+          <div class="member-actions">
+            <button mat-raised-button color="primary" (click)="startEditRole(member)">
+              Cambiar rol
+            </button>
+            <button mat-raised-button color="warn" (click)="removeMember(member.id)">
+              Eliminar
+            </button>
+          </div>
+          }
         </div>
         }
       </div>

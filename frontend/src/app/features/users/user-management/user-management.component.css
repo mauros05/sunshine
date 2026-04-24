@@ -47,6 +47,17 @@
   border-radius: 8px;
 }
 
+.member-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.role-field {
+  width: 220px;
+  margin-top: 8px;
+}
+
 .error {
   color: #b00020;
   font-weight: 500;

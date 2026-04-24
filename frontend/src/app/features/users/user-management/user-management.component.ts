@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,12 +12,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { SessionService } from '../../../core/services/session.service';
 import { UsersService } from '../../../core/services/users.service';
 import { RestaurantMembership, User } from '../../../core/models/user.model';
+import { NewLineKind } from 'typescript';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -29,7 +32,7 @@ import { RestaurantMembership, User } from '../../../core/models/user.model';
 })
 export class UserManagementComponent implements OnInit {
   private sessionService = inject(SessionService);
-  private userService = inject(UsersService);
+  private usersService = inject(UsersService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -45,6 +48,9 @@ export class UserManagementComponent implements OnInit {
   successMessage = '';
 
   roleOptions: Array<'OWNER' | 'MANAGER' | 'CASHIER'> = ['OWNER', 'MANAGER', 'CASHIER'];
+
+  editingMembershipId: string | null = null;
+  selectedRole: 'OWNER' | 'MANAGER' | 'CASHIER' = 'CASHIER';
 
   createUserForm = this.fb.group({
     fullName: ['', [Validators.required]],
@@ -76,7 +82,7 @@ export class UserManagementComponent implements OnInit {
 
   loadUsers(): void {
     this.loadingUsers = true;
-    this.userService.getUsers().subscribe({
+    this.usersService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
         this.loadingUsers = false;
@@ -90,7 +96,7 @@ export class UserManagementComponent implements OnInit {
 
   loadMembers(): void {
     this.loadingMembers = true;
-    this.userService.getRestaurantMembers(this.restaurantId).subscribe({
+    this.usersService.getRestaurantMembers(this.restaurantId).subscribe({
       next: (data) => {
         this.members = data;
         this.loadingMembers = false;
@@ -111,7 +117,7 @@ export class UserManagementComponent implements OnInit {
     this.error = '';
     this.successMessage = '';
 
-    this.userService.createUser({
+    this.usersService.createUser({
       fullName: this.createUserForm.value.fullName!,
       email: this.createUserForm.value.email!
     }).subscribe({
@@ -135,7 +141,7 @@ export class UserManagementComponent implements OnInit {
     this.error = '';
     this.successMessage = '';
 
-    this.userService.addUserToRestaurant(this.restaurantId, {
+    this.usersService.addUserToRestaurant(this.restaurantId, {
       userId: this.addMemberForm.value.userId!,
       role: this.addMemberForm.value.role!
     }).subscribe({
@@ -149,4 +155,48 @@ export class UserManagementComponent implements OnInit {
       }
     });
   }
+
+  startEditRole(member: RestaurantMembership): void {
+    this.editingMembershipId = member.id;
+    this.selectedRole = member.role;
+    this.error = '';
+    this.successMessage = '';
+  }
+
+  cancelEditRole(): void {
+    this.editingMembershipId = null;
+    this.selectedRole = 'CASHIER';
+  }
+
+  saveRole(memberId: string): void {
+    this.error = '';
+    this.successMessage = '';
+
+    this.usersService.updateMembershipRole(this.restaurantId, memberId, this.selectedRole).subscribe({
+      next: () => {
+        this.successMessage = 'Rol actualizado correctamente';
+        this.editingMembershipId = null;
+        this.loadMembers()
+      },
+      error: () => {
+        this.error = 'No se pudo actualizar el rol';
+      }
+    });
+  }
+
+  removeMember(memberId: string): void {
+    this.error = ''
+    this.successMessage = ''
+
+    this.usersService.removeMembership(this.restaurantId, memberId).subscribe({
+      next: () => {
+        this.successMessage = 'Miembro eliminado correctamente';
+        this.loadMembers();
+      },
+      error: () => {
+        this.error = 'No se pudo eliminar al miembro';
+      }
+    });
+  }
+
 }
