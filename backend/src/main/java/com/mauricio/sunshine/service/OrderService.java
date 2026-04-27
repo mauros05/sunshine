@@ -3,6 +3,9 @@ package com.mauricio.sunshine.service;
 import com.mauricio.sunshine.api.dto.AddOrderItemRequest;
 import com.mauricio.sunshine.persistence.entity.*;
 import com.mauricio.sunshine.persistence.repository.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +100,19 @@ public class OrderService {
 
     order.setStatus(OrderStatus.CANCELLED);
     return orderRepo.save(order);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<OrderEntity> getOrdersByRestaurantPaged(UUID restaurantId, OrderStatus status, Pageable pageable) {
+    if (!restaurantRepo.existsById(restaurantId)) {
+      throw new IllegalArgumentException("Restaurant not found");
+    }
+
+    if (status == null) {
+      return orderRepo.findByRestaurantId(restaurantId, pageable);
+    }
+
+    return orderRepo.findByRestaurantIdAndStatus(restaurantId, status, pageable);
   }
 
   private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {

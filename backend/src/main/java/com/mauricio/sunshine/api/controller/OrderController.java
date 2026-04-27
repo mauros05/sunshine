@@ -10,6 +10,9 @@ import com.mauricio.sunshine.service.PaymentService;
 import com.mauricio.sunshine.service.PermissionService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,18 +31,40 @@ public class OrderController {
   }
 
   @GetMapping
-  public List<OrderResponse> getOrders(
+  public PageResponse<OrderResponse> getOrders(
     @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
-    @RequestParam(required = false) OrderStatus status
+    @RequestParam(required = false) OrderStatus status,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size
   ) {
-
     permissionService.requireOwnerOrManagerOrCashier(userId, restaurantId);
 
-    return orderService.getOrdersByRestaurant(restaurantId, status)
-            .stream()
-            .map(order -> toResponse(order, orderService.getItems(order.getId())))
-            .toList();
+    var pageable = PageRequest.of(
+      page,
+      size,
+      Sort.by(Sort.Direction.DESC, "createdAt")
+    );
+
+    Page<OrderEntity> ordersPage = orderService.getOrdersByRestaurantPaged(
+      restaurantId,
+      status,
+      pageable
+    );
+
+    Page<OrderResponse> responsePage = ordersPage.map(order ->
+      toResponse(order, orderService.getItems(order.getId()))
+    );
+
+    return new PageResponse<>(
+      responsePage.getContent(),
+      responsePage.getNumber(),
+      responsePage.getSize(),
+      responsePage.getTotalElements(),
+      responsePage.getTotalPages(),
+      responsePage.hasNext(),
+      responsePage.hasPrevious()
+    );
   }
 
   @PostMapping
