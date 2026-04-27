@@ -34,6 +34,13 @@ export class OrderListComponent implements OnInit {
   restaurantName = '';
   selectedStatus = '';
 
+  page = 0;
+  size = 10;
+  totalPages = 0;
+  totalItems = 0;
+  hasNext = false;
+  hasPrevious = false;
+
   loading = false;
   error = ''
 
@@ -64,9 +71,15 @@ export class OrderListComponent implements OnInit {
 
     const status = this.selectedStatus || undefined;
 
-    this.ordersService.getOrders(this.restaurantId, status).subscribe({
+    this.ordersService.getOrders(this.restaurantId, status, this.page, this.size).subscribe({
       next: (data) => {
-        this.orders = data;
+        this.orders = data.items;
+        this.page = data.page;
+        this.size = data.size;
+        this.totalPages = data.totalPages;
+        this.totalItems = data.totalItems;
+        this.hasNext = data.hasNext;
+        this.hasPrevious = data.hasPrevious
         this.loading = false;
       },
       error: () => {
@@ -78,6 +91,19 @@ export class OrderListComponent implements OnInit {
 
   onStatusChange(status: string): void {
     this.selectedStatus = status;
+    this.page = 0;
+    this.loadOrders();
+  }
+
+  nextPage(): void {
+    if (!this.hasNext) return;
+    this.page += 1;
+    this.loadOrders();
+  }
+
+  previousPage(): void {
+    if (!this.hasPrevious) return;
+    this.page -= 1;
     this.loadOrders();
   }
 

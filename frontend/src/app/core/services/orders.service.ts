@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { AddOrderItemRequest, Order, PayOrderRequest } from "../models/order.model";
+import { PageResponse } from '../models/page-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +20,14 @@ export class OrdersService {
     return this.http.get<Order>(`${this.baseUrl}/${restaurantId}/orders/${orderId}`);
   }
 
-  getOrders(restaurantId: string, status?: string): Observable<Order[]> {
-    let url = `${this.baseUrl}/${restaurantId}/orders`;
+  getOrders(restaurantId: string, status?: string, page = 0, size = 10): Observable<PageResponse<Order>> {
+    let url = `${this.baseUrl}/${restaurantId}/orders?page=${page}&size=${size}`;
 
     if (status){
-      url += `?status=${status}`;
+      url += `&status=${status}`;
     }
 
-    return this.http.get<Order[]>(url);
+    return this.http.get<PageResponse<Order>>(url);
   }
 
   addItem(restaurantId: string, orderId: string, payload: AddOrderItemRequest): Observable <Order> {

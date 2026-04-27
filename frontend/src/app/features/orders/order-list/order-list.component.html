@@ -19,6 +19,21 @@
     </button>
   </div>
 
+  <div class="pagination">
+    <button mat-raised-button (click)="previousPage()" [disabled]="!hasPrevious">
+      Anterior
+    </button>
+
+    <span>
+      Página {{ page + 1 }} de {{ totalPages || 1 }}
+      — {{ totalItems }} órdenes
+    </span>
+
+    <button mat-raised-button (click)="nextPage()" [disabled]="!hasNext">
+      Siguiente
+    </button>
+  </div>
+
   @if (loading) {
   <p>Cargando órdenes...</p>
   }

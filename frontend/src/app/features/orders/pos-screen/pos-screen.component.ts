@@ -84,10 +84,10 @@ export class PosScreenComponent implements OnInit {
   loadOpenOrderIfExist(): void {
     if (!this.selectedRestaurantId) return;
 
-    this.ordersService.getOrders(this.selectedRestaurantId, 'OPEN').subscribe({
-      next: (orders) => {
-        if (orders.length > 0) {
-          this.currentOrder = orders[0];
+    this.ordersService.getOrders(this.selectedRestaurantId, 'OPEN', 0, 1).subscribe({
+      next: (page) => {
+        if (page.items.length > 0) {
+          this.currentOrder = page.items[0];
         } else {
           this.currentOrder = null;
         }

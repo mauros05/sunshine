@@ -37,3 +37,10 @@
   color: #b00020;
   font-weight: 500;
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
