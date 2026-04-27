@@ -3,6 +3,7 @@ package com.mauricio.sunshine.service;
 import com.mauricio.sunshine.persistence.entity.RestaurantMembershipEntity;
 import com.mauricio.sunshine.persistence.entity.UserRole;
 import com.mauricio.sunshine.persistence.repository.RestaurantMembershipRepository;
+import com.mauricio.sunshine.ForbiddenActionException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class PermissionService {
 
   public RestaurantMembershipEntity requireMembership(UUID userId, UUID restaurantId) {
     return membershipRepo.findByUserIdAndRestaurantId(userId, restaurantId)
-    .orElseThrow(() -> new IllegalArgumentException("User doesn't belong to this restaurant"));
+    .orElseThrow(() -> new ForbiddenActionException("User doesn't belong to this restaurant"));
   }
 
   public void requireAnyRole(UUID userId, UUID restaurantId, UserRole... allowedRoles) {
@@ -30,7 +31,7 @@ public class PermissionService {
       }
     }
 
-    throw new IllegalArgumentException("User does not have permission for this action");
+    throw new ForbiddenActionException("User does not have permission for this action");
   }
 
   public void requireOwner(UUID userId, UUID restaurantId) {

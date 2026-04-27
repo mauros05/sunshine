@@ -2,13 +2,17 @@ package com.mauricio.sunshine;
 
 import com.mauricio.sunshine.persistence.entity.OrderEntity;
 import com.mauricio.sunshine.persistence.entity.ProductEntity;
+import com.mauricio.sunshine.persistence.entity.RestaurantMembershipEntity;
 import com.mauricio.sunshine.persistence.entity.RestaurantEntity;
+import com.mauricio.sunshine.persistence.entity.UserEntity;
+import com.mauricio.sunshine.persistence.entity.UserRole;
 import com.mauricio.sunshine.persistence.repository.OrderItemRepository;
 import com.mauricio.sunshine.persistence.repository.OrderRepository;
 import com.mauricio.sunshine.persistence.repository.PaymentRepository;
 import com.mauricio.sunshine.persistence.repository.ProductRepository;
 import com.mauricio.sunshine.persistence.repository.RestaurantMembershipRepository;
 import com.mauricio.sunshine.persistence.repository.RestaurantRepository;
+import com.mauricio.sunshine.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,6 +55,9 @@ class OrderControllerIntegrationTest {
     @Autowired
     private RestaurantMembershipRepository membershipRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void cleanDatabase() {
         paymentRepository.deleteAll();
@@ -57,12 +65,14 @@ class OrderControllerIntegrationTest {
         orderRepository.deleteAll();
         productRepository.deleteAll();
         membershipRepository.deleteAll();
+        userRepository.deleteAll();
         restaurantRepository.deleteAll();
     }
 
     @Test
     void createOrderWithItemsReturnsItemsAndTotal() throws Exception {
         RestaurantEntity restaurant = restaurantRepository.save(new RestaurantEntity("Restaurante Test", "Calle 1"));
+        String ownerUserId = createOwnerMembership(restaurant);
         ProductEntity product = productRepository.save(
                 new ProductEntity(restaurant, "Taco", new BigDecimal("45.50"), "Food")
         );
@@ -79,6 +89,7 @@ class OrderControllerIntegrationTest {
                 """.formatted(product.getId());
 
         mockMvc.perform(post("/api/restaurants/{restaurantId}/orders", restaurant.getId())
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
@@ -93,6 +104,7 @@ class OrderControllerIntegrationTest {
     @Test
     void addItemReturnsOrderWithLoadedProductData() throws Exception {
         RestaurantEntity restaurant = restaurantRepository.save(new RestaurantEntity("Restaurante Test", "Calle 1"));
+        String ownerUserId = createOwnerMembership(restaurant);
         ProductEntity product = productRepository.save(
                 new ProductEntity(restaurant, "Agua", new BigDecimal("20.00"), "Drink")
         );
@@ -106,6 +118,7 @@ class OrderControllerIntegrationTest {
                 """.formatted(product.getId());
 
         mockMvc.perform(post("/api/restaurants/{restaurantId}/orders/{orderId}/items", restaurant.getId(), order.getId())
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
@@ -113,5 +126,14 @@ class OrderControllerIntegrationTest {
                 .andExpect(jsonPath("$.total").value(60.0))
                 .andExpect(jsonPath("$.items[0].productName").value("Agua"))
                 .andExpect(jsonPath("$.items[0].quantity").value(3));
+    }
+
+    private String createOwnerMembership(RestaurantEntity restaurant) {
+        UserEntity owner = userRepository.save(
+                new UserEntity("Owner Test", "owner-" + UUID.randomUUID() + "@test.com")
+        );
+
+        membershipRepository.save(new RestaurantMembershipEntity(owner, restaurant, UserRole.OWNER));
+        return owner.getId().toString();
     }
 }

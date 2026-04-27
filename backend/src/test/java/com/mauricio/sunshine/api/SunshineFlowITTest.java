@@ -1,5 +1,12 @@
 package com.mauricio.sunshine.api;
 
+import com.mauricio.sunshine.persistence.entity.RestaurantEntity;
+import com.mauricio.sunshine.persistence.entity.RestaurantMembershipEntity;
+import com.mauricio.sunshine.persistence.entity.UserEntity;
+import com.mauricio.sunshine.persistence.entity.UserRole;
+import com.mauricio.sunshine.persistence.repository.RestaurantMembershipRepository;
+import com.mauricio.sunshine.persistence.repository.RestaurantRepository;
+import com.mauricio.sunshine.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -7,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -18,6 +27,15 @@ class PosFlowITTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    RestaurantRepository restaurantRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    RestaurantMembershipRepository membershipRepository;
 
     @Test
     void fullOrderPaymentFlow_shouldWork() throws Exception {
@@ -38,9 +56,11 @@ class PosFlowITTest {
                 .getContentAsString();
 
         String restaurantId = JsonTestUtils.readJsonField(restaurantResponse, "id");
+        String ownerUserId = createOwnerMembership(restaurantId);
 
         // 2) Crear producto
         String productResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/products")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -59,6 +79,7 @@ class PosFlowITTest {
 
         // 3) Crear orden
         String orderResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isOk())
@@ -72,6 +93,7 @@ class PosFlowITTest {
 
         // 4) Agregar item
         mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/items")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -88,6 +110,7 @@ class PosFlowITTest {
 
         // 5) Pagar orden
         mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/pay")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -100,7 +123,8 @@ class PosFlowITTest {
                 .andExpect(jsonPath("$.amount").value(190.00));
 
         // 6) Verificar que la orden ya no está OPEN sino PAID
-        mockMvc.perform(get("/api/restaurants/" + restaurantId + "/orders/" + orderId))
+        mockMvc.perform(get("/api/restaurants/" + restaurantId + "/orders/" + orderId)
+                        .header("X-User-Id", ownerUserId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("PAID"))
                 .andExpect(jsonPath("$.total").value(190.00));
@@ -123,8 +147,10 @@ class PosFlowITTest {
                 .getContentAsString();
 
         String restaurantId = JsonTestUtils.readJsonField(restaurantResponse, "id");
+        String ownerUserId = createOwnerMembership(restaurantId);
 
         String orderResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isOk())
@@ -134,7 +160,8 @@ class PosFlowITTest {
 
         String orderId = JsonTestUtils.readJsonField(orderResponse, "id");
 
-        mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/cancel"))
+        mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/cancel")
+                        .header("X-User-Id", ownerUserId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("CANCELLED"));
     }
@@ -156,8 +183,10 @@ class PosFlowITTest {
                 .getContentAsString();
 
         String restaurantId = JsonTestUtils.readJsonField(restaurantResponse, "id");
+        String ownerUserId = createOwnerMembership(restaurantId);
 
         String productResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/products")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -174,6 +203,7 @@ class PosFlowITTest {
         String productId = JsonTestUtils.readJsonField(productResponse, "id");
 
         String orderResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isOk())
@@ -184,6 +214,7 @@ class PosFlowITTest {
         String orderId = JsonTestUtils.readJsonField(orderResponse, "id");
 
         mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/items")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -194,6 +225,7 @@ class PosFlowITTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/pay")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -203,7 +235,8 @@ class PosFlowITTest {
                                 """))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/cancel"))
+        mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/orders/" + orderId + "/cancel")
+                        .header("X-User-Id", ownerUserId))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -224,6 +257,7 @@ class PosFlowITTest {
                 .getContentAsString();
 
         String restaurantId = JsonTestUtils.readJsonField(restaurantResponse, "id");
+        String ownerUserId = createOwnerMembership(restaurantId);
         String uniqueEmail = "rol-update-" + System.nanoTime() + "@test.com";
 
         String userResponse = mockMvc.perform(post("/api/users")
@@ -242,6 +276,7 @@ class PosFlowITTest {
         String userId = JsonTestUtils.readJsonField(userResponse, "id");
 
         String membershipResponse = mockMvc.perform(post("/api/restaurants/" + restaurantId + "/members")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -257,6 +292,7 @@ class PosFlowITTest {
         String membershipId = JsonTestUtils.readJsonField(membershipResponse, "id");
 
         mockMvc.perform(patch("/api/restaurants/" + restaurantId + "/members/" + membershipId + "/role")
+                        .header("X-User-Id", ownerUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -271,5 +307,17 @@ class PosFlowITTest {
                 .andExpect(jsonPath("$.restaurantId").value(restaurantId))
                 .andExpect(jsonPath("$.restaurantName").value("Restaurante Roles"))
                 .andExpect(jsonPath("$.role").value("MANAGER"));
+    }
+
+    private String createOwnerMembership(String restaurantId) {
+        RestaurantEntity restaurant = restaurantRepository.findById(UUID.fromString(restaurantId))
+                .orElseThrow();
+
+        UserEntity owner = userRepository.save(
+                new UserEntity("Owner Test", "owner-" + UUID.randomUUID() + "@test.com")
+        );
+
+        membershipRepository.save(new RestaurantMembershipEntity(owner, restaurant, UserRole.OWNER));
+        return owner.getId().toString();
     }
 }

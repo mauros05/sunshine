@@ -4,6 +4,7 @@ import com.mauricio.sunshine.api.dto.*;
 import com.mauricio.sunshine.persistence.entity.RestaurantMembershipEntity;
 import com.mauricio.sunshine.persistence.entity.UserEntity;
 import com.mauricio.sunshine.service.UserService;
+import com.mauricio.sunshine.service.PermissionService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,17 @@ import java.util.UUID;
 public class UserController {
 
   private final UserService userService;
+  private final PermissionService permissionService;
 
-  public UserController(UserService userService) {
+  public UserController(UserService userService, PermissionService permissionService) {
     this.userService = userService;
+    this.permissionService = permissionService;
   }
 
   @PostMapping("/users")
-  public UserResponse createUser(@Valid @RequestBody CreateUserRequest req) {
+  public UserResponse createUser(
+    @Valid @RequestBody CreateUserRequest req
+  ) {
     UserEntity user = userService.createUser(req.fullName(), req.email());
     return toUserResponse(user);
   }
@@ -37,7 +42,13 @@ public class UserController {
   }
 
   @PostMapping("/restaurants/{restaurantId}/members")
-  public RestaurantMembershipResponse addUserToRestaurant(@PathVariable UUID restaurantId, @Valid @RequestBody AddUserToRestaurantRequest req) {
+  public RestaurantMembershipResponse addUserToRestaurant(
+    @RequestHeader("X-User-Id") UUID userId,
+    @PathVariable UUID restaurantId,
+    @Valid @RequestBody AddUserToRestaurantRequest req
+  ) {
+    permissionService.requireOwner(userId, restaurantId);
+
     RestaurantMembershipEntity membership = userService.addUserToRestaurant(
       restaurantId,
       req.userId(),
@@ -48,7 +59,13 @@ public class UserController {
   }
 
   @GetMapping("/restaurants/{restaurantId}/members")
-  public List<RestaurantMembershipResponse> getMembersByRestautant(@PathVariable UUID restaurantId) {
+  public List<RestaurantMembershipResponse> getMembersByRestautant(
+    @RequestHeader("X-User-Id") UUID userId,
+    @PathVariable UUID restaurantId
+  ) {
+
+    permissionService.requireOwner(userId, restaurantId);
+
     return userService.getMembershipsByRestaurant(restaurantId)
     .stream()
     .map(this::toMembershipResponse)
@@ -57,10 +74,14 @@ public class UserController {
 
   @PatchMapping("/restaurants/{restaurantId}/members/{membershipId}/role")
   public RestaurantMembershipResponse updateMemberhsipRole(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @PathVariable UUID membershipId,
     @Valid @RequestBody UpdateMembershipRoleRequest req
   ){
+
+    permissionService.requireOwner(userId, restaurantId);
+
     RestaurantMembershipEntity membership = userService.updateMembershipRole(
       restaurantId,
       membershipId,
@@ -72,9 +93,13 @@ public class UserController {
 
   @DeleteMapping("/restaurants/{restaurantId}/members/{membershipId}")
   public void removeMembership(
+    @RequestHeader("X-User-Id") UUID userId,
     @PathVariable UUID restaurantId,
     @PathVariable UUID membershipId
   ) {
+
+    permissionService.requireOwner(userId, restaurantId);
+
     userService.removeMembership(restaurantId, membershipId);
   }
 
