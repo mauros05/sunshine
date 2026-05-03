@@ -16,6 +16,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
 
   List<OrderEntity> findByRestaurantIdAndStatus(UUID restaurantId, OrderStatus status);
 
+  List<OrderEntity> findByRestaurantIdAndStatusAndCreatedAtBetween(UUID restaurantId, OrderStatus status, java.time.LocalDateTime from, java.time.LocalDateTime to);
+
   Page<OrderEntity> findByRestaurantId(UUID restaurantId, Pageable pageable);
 
   Page<OrderEntity> findByRestaurantIdAndStatus(UUID restaurantId, OrderStatus status, Pageable pageable);
