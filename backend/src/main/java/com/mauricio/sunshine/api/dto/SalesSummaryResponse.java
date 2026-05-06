@@ -10,6 +10,6 @@ public record SalesSummaryResponse(
   LocalDate to,
   long paidOrders,
   BigDecimal totalSales,
-  BigDecimal avarageTicket
+  BigDecimal averageTicket
 ) {
 }
