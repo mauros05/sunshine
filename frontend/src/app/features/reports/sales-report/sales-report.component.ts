@@ -2,10 +2,13 @@ import { Component, OnInit, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 
 import { SessionService } from "../../../core/services/session.service";
-import { SalesReport } from "../../../core/models/report.model";
+import { SalesReport, SalesSummary } from "../../../core/models/report.model";
 import { ReportsServie } from "../../../core/services/reports.service";
 
 
@@ -13,6 +16,9 @@ import { ReportsServie } from "../../../core/services/reports.service";
   selector: 'app-sales-report',
   standalone: true,
   imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     CommonModule,
     MatCardModule,
     MatButtonModule
@@ -28,6 +34,11 @@ export class SalesReportComponent implements OnInit {
   restaurantId = '';
   restaurantName = '';
   report: SalesReport | null = null;
+
+  summary: SalesSummary | null = null;
+
+  from = '';
+  to = '';
 
   loading = false;
   error = '';
@@ -46,7 +57,12 @@ export class SalesReportComponent implements OnInit {
       return;
     }
 
+    const today = new Date().toISOString().slice(0, 10);
+    this.from = today;
+    this.to = today;
+
     this.loadReport();
+    this.loadSummary();
   }
 
   loadReport(): void {
@@ -63,6 +79,25 @@ export class SalesReportComponent implements OnInit {
       },
       error: () => {
         this.error = 'No se pudo cargar el reporte';
+        this.loading = false;
+      }
+    });
+  }
+
+  loadSummary(): void {
+    if (!this.restaurantId || !this.from || !this.to) return;
+
+    this.loading = true;
+    this.error = '';
+    this.summary = null;
+
+    this.reportsService.getSalesSummary(this.restaurantId, this.from, this.to).subscribe({
+      next: (data) => {
+        this.summary = data;
+        this.loading = false
+      },
+      error: () => {
+        this.error = 'No se pudo cargar el resumen de ventas';
         this.loading = false;
       }
     });

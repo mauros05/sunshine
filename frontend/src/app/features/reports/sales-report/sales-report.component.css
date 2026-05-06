@@ -17,6 +17,14 @@
   padding: 12px;
 }
 
+.date-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
 .error {
   color: #b00020;
   font-weight: 500;

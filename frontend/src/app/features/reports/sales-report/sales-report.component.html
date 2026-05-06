@@ -2,6 +2,22 @@
   <h1>Sales Report</h1>
   <p class="subtitle">Restaurante actual: <strong>{{ restaurantName }}</strong></p>
 
+  <div class="date-filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Desde</mat-label>
+      <input matInput type="date" [(ngModel)]="from" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hasta</mat-label>
+      <input matInput type="date" [(ngModel)]="to" />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="loadSummary()" [disabled]="loading">
+      Consultar resumen
+    </button>
+  </div>
+
   <div class="actions">
     <button mat-raised-button color="primary" (click)="loadReport()" [disabled]="loading">
       Refrescar reporte
@@ -23,6 +39,20 @@
       <p><strong>Restaurant ID:</strong> {{ report.restaurantId }}</p>
       <p><strong>Órdenes pagadas:</strong> {{ report.paidOrders }}</p>
       <p><strong>Total vendido:</strong> ${{ report.totalSales }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+
+
+  @if (summary) {
+  <mat-card class="report-card">
+    <mat-card-title>Resumen por fechas</mat-card-title>
+    <mat-card-content>
+      <p><strong>Desde:</strong> {{ summary.from }}</p>
+      <p><strong>Hasta:</strong> {{ summary.to }}</p>
+      <p><strong>Órdenes pagadas:</strong> {{ summary.paidOrders }}</p>
+      <p><strong>Total vendido:</strong> ${{ summary.totalSales }}</p>
+      <p><strong>Ticket promedio:</strong> ${{ summary.averageTicket }}</p>
     </mat-card-content>
   </mat-card>
   }

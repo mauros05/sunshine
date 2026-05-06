@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { SalesReport } from "../models/report.model";
+import { SalesReport, SalesSummary } from "../models/report.model";
 
 
 @Injectable({
@@ -13,7 +13,14 @@ export class ReportsServie {
   private baseUrl = `${environment.apiUrl}/restaurants`;
 
   getSalesReport(restaurantId: string): Observable<SalesReport> {
-    return this.http.get<SalesReport>(`${this.baseUrl}/${restaurantId}/sales-report`);
+    return this.http.get<SalesReport>(
+      `${this.baseUrl}/${restaurantId}/sales-report`
+    );
   }
 
+  getSalesSummary(restaurantId: string, from: string, to: string){
+    return this.http.get<SalesSummary>(
+      `${this.baseUrl}/${restaurantId}/sales-report/summary?from=${from}&to=${to}`
+    );
+  }
 }
