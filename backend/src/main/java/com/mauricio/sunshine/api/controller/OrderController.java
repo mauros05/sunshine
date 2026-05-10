@@ -153,6 +153,16 @@ public class OrderController {
     return toResponse(order, orderService.getItems(order.getId()));
   }
 
+  @GetMapping("/{orderId}/ticket")
+  public TicketResponse getTicket(
+    @RequestHeader("X-User-Id") UUID userId,
+    @PathVariable UUID restaurantId,
+    @PathVariable UUID orderId
+  ) {
+    permissionService.requireOwnerOrManagerOrCashier(userId, restaurantId);
+    return orderService.getTicket(restaurantId, orderId);
+  }
+
   private OrderResponse toResponse(OrderEntity order, List<OrderItemEntity> items) {
       return new OrderResponse(
               order.getId(),

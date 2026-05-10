@@ -1,6 +1,8 @@
 package com.mauricio.sunshine.service;
 
 import com.mauricio.sunshine.api.dto.AddOrderItemRequest;
+import com.mauricio.sunshine.api.dto.TicketItemResponse;
+import com.mauricio.sunshine.api.dto.TicketResponse;
 import com.mauricio.sunshine.persistence.entity.*;
 import com.mauricio.sunshine.persistence.repository.*;
 
@@ -113,6 +115,35 @@ public class OrderService {
     }
 
     return orderRepo.findByRestaurantIdAndStatus(restaurantId, status, pageable);
+  }
+
+  @Transactional(readOnly = true)
+  public TicketResponse getTicket(UUID restaurantId, UUID orderId) {
+    OrderEntity order =  orderRepo.findByIdAndRestaurantId(orderId, restaurantId)
+    .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+    if (order.getStatus() != OrderStatus.PAID) {
+      throw new IllegalArgumentException("Only PAID orders can generate a ticket");
+    }
+
+    List<OrderItemEntity> items = orderItemRepo.findByOrderId(orderId);
+
+    List<TicketItemResponse> ticketItems = items.stream()
+            .map(item -> new TicketItemResponse(
+              item.getProduct().getName(),
+              item.getQuantity(),
+              item.getUnitPrice(),
+              item.getSubtotal()
+            ))
+            .toList();
+
+    return new TicketResponse(
+      order.getId(),
+      order.getRestaurant().getName(),
+      order.getCreatedAt(),
+      order.getTotal(),
+      ticketItems
+    );
   }
 
   private void addItemToOrder(OrderEntity order, UUID restaurantId, UUID productId, Integer quantity) {

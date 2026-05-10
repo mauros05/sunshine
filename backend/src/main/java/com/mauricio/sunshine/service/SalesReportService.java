@@ -2,10 +2,12 @@ package com.mauricio.sunshine.service;
 
 import com.mauricio.sunshine.api.dto.SalesReportResponse;
 import com.mauricio.sunshine.api.dto.SalesSummaryResponse;
+import com.mauricio.sunshine.api.dto.TopProductResponse;
 import com.mauricio.sunshine.persistence.entity.OrderEntity;
 import com.mauricio.sunshine.persistence.entity.OrderStatus;
 import com.mauricio.sunshine.persistence.repository.OrderRepository;
 import com.mauricio.sunshine.persistence.repository.RestaurantRepository;
+import com.mauricio.sunshine.persistence.repository.OrderItemRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +17,19 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class SalesReportService {
 
   private final OrderRepository orderRepo;
   private final RestaurantRepository restaurantRepo;
+  private final OrderItemRepository orderItemRepo;
 
-  public SalesReportService(OrderRepository orderRepo, RestaurantRepository restaurantRepo) {
+  public SalesReportService(OrderRepository orderRepo, RestaurantRepository restaurantRepo, OrderItemRepository orderItemRepo) {
     this.orderRepo = orderRepo;
     this.restaurantRepo = restaurantRepo;
+    this.orderItemRepo = orderItemRepo;
   }
 
   @Transactional(readOnly = true)
@@ -77,5 +82,19 @@ public class SalesReportService {
     );
   }
 
+  @Transactional(readOnly = true)
+  public List<TopProductResponse> getTopProducts(UUID restaurantId, LocalDate from, LocalDate to) {
+    if (!restaurantRepo.existsById(restaurantId)) {
+      throw new IllegalArgumentException("Restaurant not found");
+    }
+
+    LocalDateTime fromDateTime = from.atStartOfDay();
+    LocalDateTime toDataTiem = to.plusDays(1).atStartOfDay();
+
+    return orderItemRepo.findTopProducts(
+      restaurantId,
+      fromDateTime,
+      toDataTiem);
+  }
 
 }
