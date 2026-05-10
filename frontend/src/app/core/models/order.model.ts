@@ -25,3 +25,18 @@ export interface PayOrderRequest {
   method: 'CASH' | 'CARD' | 'TRANSFER';
   amount: number;
 }
+
+export interface TicketItem {
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface Ticket {
+  orderId: string;
+  restaurantName: string;
+  createdAt: string;
+  total: number;
+  items: TicketItem[];
+}

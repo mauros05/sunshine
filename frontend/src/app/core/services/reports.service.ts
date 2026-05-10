@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { SalesReport, SalesSummary } from "../models/report.model";
+import { SalesReport, SalesSummary, TopProduct } from "../models/report.model";
 
 
 @Injectable({
@@ -21,6 +21,12 @@ export class ReportsServie {
   getSalesSummary(restaurantId: string, from: string, to: string){
     return this.http.get<SalesSummary>(
       `${this.baseUrl}/${restaurantId}/sales-report/summary?from=${from}&to=${to}`
+    );
+  }
+
+  getTopProducts(restaurantId: string, from: string, to: string){
+    return this.http.get<TopProduct[]>(
+      `${this.baseUrl}/${restaurantId}/sales-report/top-products?from=${from}&to=${to}`
     );
   }
 }

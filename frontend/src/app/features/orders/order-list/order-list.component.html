@@ -68,8 +68,70 @@
           </li>
           }
         </ul>
+        @if (order.status === 'PAID') {
+        <button mat-raised-button color="primary" (click)="viewTicket(order)">
+          Ver ticket
+        </button>
+        }
       </mat-card-content>
     </mat-card>
     }
   </div>
+
+  @if (ticketError) {
+  <p class="error">{{ ticketError }}</p>
+  }
+
+  @if (selectedTicket) {
+  <div class="ticket-modal-backdrop" (click)="closeTicket()">
+    <mat-card class="ticket-modal" (click)="$event.stopPropagation()">
+      <div class="ticket-modal-header">
+        <mat-card-title>Ticket</mat-card-title>
+        <button
+          type="button"
+          mat-icon-button
+          class="ticket-close-button"
+          aria-label="Cerrar ticket"
+          (click)="closeTicket()"
+        >
+          ×
+        </button>
+      </div>
+
+      <mat-card-content>
+        <div class="ticket">
+          <h2>{{ selectedTicket.restaurantName }}</h2>
+          <p><strong>Orden:</strong> {{ selectedTicket.orderId }}</p>
+          <p><strong>Fecha:</strong> {{ selectedTicket.createdAt | date:'short' }}</p>
+
+          <hr />
+
+          @for (item of selectedTicket.items; track $index) {
+          <div class="ticket-row">
+            <span>{{ item.productName }} x{{ item.quantity }}</span>
+            <span>{{ item.subtotal | currency:'MXN' }}</span>
+          </div>
+          }
+
+          <hr />
+
+          <div class="ticket-total">
+            <strong>Total</strong>
+            <strong>{{ selectedTicket.total | currency:'MXN' }}</strong>
+          </div>
+        </div>
+
+        <div class="ticket-actions">
+          <button mat-raised-button color="primary" (click)="printTicket()">
+            Imprimir
+          </button>
+
+          <button mat-raised-button color="warn" (click)="closeTicket()">
+            Cerrar
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  }
 </section>

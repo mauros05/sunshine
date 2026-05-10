@@ -43,7 +43,6 @@
   </mat-card>
   }
 
-
   @if (summary) {
   <mat-card class="report-card">
     <mat-card-title>Resumen por fechas</mat-card-title>
@@ -53,6 +52,23 @@
       <p><strong>Órdenes pagadas:</strong> {{ summary.paidOrders }}</p>
       <p><strong>Total vendido:</strong> ${{ summary.totalSales }}</p>
       <p><strong>Ticket promedio:</strong> ${{ summary.averageTicket }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  @if (topProducts.length > 0) {
+  <mat-card class="report-card">
+    <mat-card-title>Productos más vendidos</mat-card-title>
+    <mat-card-content>
+      <div class="top-products-list">
+        @for (product of topProducts; track product.productId) {
+        <div class="top-product-row">
+          <p><strong>{{ product.productName }}</strong></p>
+          <p>Cantidad vendida: {{ product.quantitySold }}</p>
+          <p>Total vendido: ${{ product.totalSales }}</p>
+        </div>
+        }
+      </div>
     </mat-card-content>
   </mat-card>
   }

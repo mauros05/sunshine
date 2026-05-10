@@ -44,3 +44,59 @@
   gap: 16px;
   margin: 16px 0 24px;
 }
+
+.ticket {
+  font-family: monospace;
+  background: #fafafa;
+  padding: 16px;
+  border: 1px dashed #999;
+}
+
+.ticket h2 {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.ticket-row,
+.ticket-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0;
+}
+
+.ticket-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ticket-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.ticket-modal {
+  width: min(460px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 12px;
+}
+
+.ticket-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ticket-close-button {
+  font-size: 24px;
+  line-height: 1;
+}

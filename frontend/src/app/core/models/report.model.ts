@@ -14,3 +14,10 @@ export interface SalesSummary {
   totalSales: number;
   averageTicket: number;
 }
+
+export interface TopProduct {
+  productId: string;
+  productName: string;
+  quantitySold: number;
+  totalSales: number;
+}

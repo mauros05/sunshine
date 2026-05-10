@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { AddOrderItemRequest, Order, PayOrderRequest } from "../models/order.model";
+import { AddOrderItemRequest, Order, PayOrderRequest, Ticket } from "../models/order.model";
 import { PageResponse } from '../models/page-response.model';
 
 @Injectable({
@@ -49,5 +49,11 @@ export class OrdersService {
       `${this.baseUrl}/${restaurantId}/orders/${orderId}/cancel`,
       {}
     );
+  }
+
+  getTicket(restaurantId: string, orderId: string) {
+    return this.http.get<Ticket>(
+      `${this.baseUrl}/${restaurantId}/orders/${orderId}/ticket`
+    )
   }
 }

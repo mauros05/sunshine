@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 
 import { SessionService } from "../../../core/services/session.service";
-import { SalesReport, SalesSummary } from "../../../core/models/report.model";
+import { SalesReport, SalesSummary, TopProduct } from "../../../core/models/report.model";
 import { ReportsServie } from "../../../core/services/reports.service";
 
 
@@ -36,6 +36,8 @@ export class SalesReportComponent implements OnInit {
   report: SalesReport | null = null;
 
   summary: SalesSummary | null = null;
+
+  topProducts: TopProduct[] = [];
 
   from = '';
   to = '';
@@ -84,17 +86,32 @@ export class SalesReportComponent implements OnInit {
     });
   }
 
+  loadTopProducts():void {
+    if (!this.restaurantId || !this.from || !this.to) return;
+
+    this.reportsService.getTopProducts(this.restaurantId, this.from, this.to).subscribe({
+      next: (data) => {
+        this.topProducts = data;
+      },
+      error: () => {
+        this.error = 'No se pudo cargar el tip de productos';
+      }
+    });
+  }
+
   loadSummary(): void {
     if (!this.restaurantId || !this.from || !this.to) return;
 
     this.loading = true;
     this.error = '';
     this.summary = null;
+    this.topProducts = [];
 
     this.reportsService.getSalesSummary(this.restaurantId, this.from, this.to).subscribe({
       next: (data) => {
         this.summary = data;
         this.loading = false
+        this.loadTopProducts();
       },
       error: () => {
         this.error = 'No se pudo cargar el resumen de ventas';
