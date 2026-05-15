@@ -35,8 +35,12 @@ export interface TicketItem {
 
 export interface Ticket {
   orderId: string;
+  folio: number;
   restaurantName: string;
+  restaurantAddress: string;
   createdAt: string;
+  paidAt: string;
+  paymentMethod: 'CASH' | 'CARD' | 'TRANSFER';
   total: number;
   items: TicketItem[];
 }

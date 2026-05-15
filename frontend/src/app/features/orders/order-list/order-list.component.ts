@@ -168,20 +168,25 @@ export class OrderListComponent implements OnInit, OnDestroy {
           body { margin: 0; padding: 16px; background: #fff; color: #111; font-family: "Courier New", monospace; }
           .ticket { width: 280px; margin: 0 auto; border: 1px dashed #777; padding: 12px; }
           .center { text-align: center; }
-          .row, .total { display: flex; justify-content: space-between; gap: 12px; margin: 6px 0; }
-          .total { font-weight: 700; margin-top: 12px; }
+          .ticket-row, .ticket-total { display: flex; justify-content: space-between; gap: 12px; margin: 6px 0; }
+          .ticket-total { font-weight: 700; margin-top: 12px; }
           hr { border: 0; border-top: 1px dashed #999; margin: 10px 0; }
         </style>
       </head>
       <body>
         <section class="ticket">
           <h2 class="center">${this.escapeHtml(ticket.restaurantName)}</h2>
+          <p class="center">${this.escapeHtml(ticket.restaurantAddress)}</p>
+          <hr />
+          <p><strong>Folio:</strong> #${ticket.folio}</p>
           <p><strong>Orden:</strong> ${this.escapeHtml(ticket.orderId)}</p>
           <p><strong>Fecha:</strong> ${this.escapeHtml(this.formatDate(ticket.createdAt))}</p>
+          <p><strong>Pagada:</strong> ${this.escapeHtml(this.formatDate(ticket.paidAt))}</p>
+          <p><strong>Método:</strong> ${this.escapeHtml(ticket.paymentMethod)}</p>
           <hr />
           ${itemsHtml}
           <hr />
-          <div class="total">
+          <div class="ticket-total">
             <span>Total</span>
             <span>${this.formatCurrency(ticket.total)}</span>
           </div>

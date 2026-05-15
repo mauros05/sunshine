@@ -101,16 +101,23 @@
       <mat-card-content>
         <div class="ticket">
           <h2>{{ selectedTicket.restaurantName }}</h2>
+          <p class="center">{{ selectedTicket.restaurantAddress }}</p>
+
+          <hr />
+
+          <p><strong>Folio:</strong> #{{ selectedTicket.folio }}</p>
           <p><strong>Orden:</strong> {{ selectedTicket.orderId }}</p>
           <p><strong>Fecha:</strong> {{ selectedTicket.createdAt | date:'short' }}</p>
+          <p><strong>Pagada:</strong> {{ selectedTicket.paidAt | date:'short' }}</p>
+          <p><strong>Método:</strong> {{ selectedTicket.paymentMethod }}</p>
 
           <hr />
 
           @for (item of selectedTicket.items; track $index) {
-          <div class="ticket-row">
-            <span>{{ item.productName }} x{{ item.quantity }}</span>
-            <span>{{ item.subtotal | currency:'MXN' }}</span>
-          </div>
+            <div class="ticket-row">
+              <span>{{ item.productName }} x{{ item.quantity }}</span>
+              <span>{{ item.subtotal | currency:'MXN' }}</span>
+            </div>
           }
 
           <hr />
