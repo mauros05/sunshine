@@ -5,6 +5,7 @@ import com.mauricio.sunshine.persistence.entity.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +26,11 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
   Optional<OrderEntity> findByIdAndRestaurantId(UUID orderId, UUID restaurantId);
 
   long countByRestaurantIdAndStatus(UUID restaurantId, OrderStatus status);
+
+  @Query("""
+      select coalesce(max(o.folio), 0)
+       from OrderEntity o
+       where o.restaurant.id = :restaurantId
+      """)
+  Long findMaxFolioByRestaurantId(UUID restaurantId);
 }

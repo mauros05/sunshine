@@ -22,16 +22,19 @@ public class OrderService {
   private final ProductRepository productRepo;
   private final OrderRepository orderRepo;
   private final OrderItemRepository orderItemRepo;
+  private final PaymentRepository paymentRepo;
 
   public OrderService(RestaurantRepository restaurantRepo,
                       ProductRepository productRepo,
                       OrderRepository orderRepo,
-                      OrderItemRepository orderItemRepo
+                      OrderItemRepository orderItemRepo,
+                      PaymentRepository paymentRepo
                       ) {
       this.restaurantRepo = restaurantRepo;
       this.productRepo = productRepo;
       this.orderRepo = orderRepo;
       this.orderItemRepo = orderItemRepo;
+      this.paymentRepo = paymentRepo;
   }
 
   @Transactional
@@ -39,11 +42,13 @@ public class OrderService {
     RestaurantEntity restaurant = restaurantRepo.findById(restaurantId)
             .orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado"));
 
-    OrderEntity order = new OrderEntity(restaurant);
+    Long nextFolio = orderRepo.findMaxFolioByRestaurantId(restaurantId) + 1;
+
+    OrderEntity order = new OrderEntity(restaurant, nextFolio);
     OrderEntity savedOrder = orderRepo.save(order);
 
     for (AddOrderItemRequest item : items) {
-        addItemToOrder(savedOrder, restaurantId, item.productId(), item.quantity());
+      addItemToOrder(savedOrder, restaurantId, item.productId(), item.quantity());
     }
 
     recalculateTotal(savedOrder);
@@ -57,7 +62,7 @@ public class OrderService {
             .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
 
     if (order.getStatus() != OrderStatus.OPEN) {
-        throw new IllegalArgumentException("Solo Ordenes en OPEN pueden ser modificadas");
+      throw new IllegalArgumentException("Solo Ordenes en OPEN pueden ser modificadas");
     }
 
     addItemToOrder(order, restaurantId, productId, quantity);
@@ -81,11 +86,11 @@ public class OrderService {
   @Transactional(readOnly = true)
   public List<OrderEntity> getOrdersByRestaurant(UUID restaurantId, OrderStatus status){
     if (!restaurantRepo.existsById(restaurantId)) {
-        throw new IllegalArgumentException("Restaurante no encontrado");
+      throw new IllegalArgumentException("Restaurante no encontrado");
     }
 
     if (status == null) {
-        return orderRepo.findByRestaurantId(restaurantId);
+      return orderRepo.findByRestaurantId(restaurantId);
     }
 
     return orderRepo.findByRestaurantIdAndStatus(restaurantId, status);
@@ -97,7 +102,7 @@ public class OrderService {
             .orElseThrow(() -> new IllegalArgumentException("Orden no encontada"));
 
     if (order.getStatus() != OrderStatus.OPEN) {
-        throw new IllegalArgumentException("Solo se pueden cancelar los pedidos ABIERTOS.");
+      throw new IllegalArgumentException("Solo se pueden cancelar los pedidos ABIERTOS.");
     }
 
     order.setStatus(OrderStatus.CANCELLED);
@@ -126,6 +131,9 @@ public class OrderService {
       throw new IllegalArgumentException("Only PAID orders can generate a ticket");
     }
 
+    PaymentEntity payment = paymentRepo.findFirstByOrderId(orderId)
+    .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
+
     List<OrderItemEntity> items = orderItemRepo.findByOrderId(orderId);
 
     List<TicketItemResponse> ticketItems = items.stream()
@@ -139,8 +147,12 @@ public class OrderService {
 
     return new TicketResponse(
       order.getId(),
+      order.getFolio(),
       order.getRestaurant().getName(),
+      order.getRestaurant().getAddress(),
       order.getCreatedAt(),
+      payment.getPaidAt(),
+      payment.getMethod(),
       order.getTotal(),
       ticketItems
     );
@@ -151,7 +163,7 @@ public class OrderService {
             .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
     if (!product.isActive()) {
-        throw new IllegalArgumentException("El producto esta inactivo");
+      throw new IllegalArgumentException("El producto esta inactivo");
     }
 
     OrderItemEntity item = new OrderItemEntity(order, product, quantity, product.getPrice());

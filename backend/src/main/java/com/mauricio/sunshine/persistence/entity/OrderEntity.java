@@ -10,64 +10,80 @@ import java.util.UUID;
 @Table(name = "orders")
 public class OrderEntity {
 
-    @Id
-    @GeneratedValue
-    private UUID id;
+  @Id
+  @GeneratedValue
+  private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private RestaurantEntity restaurant;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "restaurant_id", nullable = false)
+  private RestaurantEntity restaurant;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private OrderStatus status;
 
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal total;
+  @Column(nullable = false, precision = 19, scale = 2)
+  private BigDecimal total;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
 
-    public OrderEntity(){
-    }
+  @Column(nullable = true)
+  private Long folio;
 
-    public OrderEntity(RestaurantEntity restaurant){
-        this.restaurant = restaurant;
-        this.status = OrderStatus.OPEN;
-        this.total = BigDecimal.ZERO;
-        this.createdAt = LocalDateTime.now();
-    }
+  public OrderEntity(){
+  }
 
-    public UUID getId() {
-        return id;
-    }
+  public OrderEntity(RestaurantEntity restaurant){
+    this(restaurant, null);
+  }
 
-    public RestaurantEntity getRestaurant() {
-        return restaurant;
-    }
+  public OrderEntity(RestaurantEntity restaurant, Long folio){
+    this.restaurant = restaurant;
+    this.folio = folio;
+    this.status = OrderStatus.OPEN;
+    this.total = BigDecimal.ZERO;
+    this.createdAt = LocalDateTime.now();
+  }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+  public RestaurantEntity getRestaurant() {
+    return restaurant;
+  }
 
-    public LocalDateTime getCreatedAt(){
-        return createdAt;
-    }
+  public OrderStatus getStatus() {
+    return status;
+  }
 
-    public void setRestaurant(RestaurantEntity restaurant){
-        this.restaurant = restaurant;
-    }
+  public BigDecimal getTotal() {
+    return total;
+  }
 
-    public void setStatus(OrderStatus status){
-        this.status = status;
-    }
+  public LocalDateTime getCreatedAt(){
+    return createdAt;
+  }
 
-    public void setTotal(BigDecimal total){
-        this.total = total;
-    }
+  public Long getFolio() {
+    return folio;
+  }
+
+  public void setRestaurant(RestaurantEntity restaurant){
+    this.restaurant = restaurant;
+  }
+
+  public void setStatus(OrderStatus status){
+    this.status = status;
+  }
+
+  public void setTotal(BigDecimal total){
+    this.total = total;
+  }
+
+  public void setFolio(Long folio) {
+    this.folio = folio;
+  }
 
 }
